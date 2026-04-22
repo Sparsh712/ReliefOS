@@ -1,18 +1,8 @@
 """
 lib/risk.py — Dengue/monsoon hotspot risk scoring + escalation clock.
 
-Formula (Phase 4):
-    base = fever_cases * 12
-         + 25 if stagnant_water
-         + 15 if water_quality_issue
-         + 10 if medicine_shortage
-         + 15 if urgency == "high"
-         +  8 if urgency == "medium"
-         + corroboration_bonus
-
-    final_score = min(100, base * rain_multiplier)
-
-Escalation clock: estimate days-to-next-risk-level based on signal velocity.
+Primary mode: XGBoost model prediction (0-100).
+Fallback mode: expanded heuristic if model is unavailable.
 """
 
 from __future__ import annotations
@@ -22,9 +12,21 @@ from functools import lru_cache
 from pathlib import Path
 
 from models import ExtractedReport, TrustResult, RiskResult
+from lib.risk_features import (
+    FEATURE_ORDER,
+    build_features,
+    cross_report_corroboration_bonus,
+    ordered_feature_vector,
+)
+
+try:
+    import xgboost as xgb
+except Exception:  # pragma: no cover - graceful fallback when package is absent
+    xgb = None
 
 
 DEFAULT_RAIN_MULTIPLIER = 1.2
+MODEL_PATH = Path(__file__).resolve().parent.parent / "data" / "risk_xgb_model.json"
 
 
 @lru_cache(maxsize=1)
@@ -52,31 +54,90 @@ def _rain_multiplier_for_ward(ward: str | None) -> float:
     return _ward_multiplier_map().get(key, _ward_multiplier_map().get(key.replace(" ", ""), DEFAULT_RAIN_MULTIPLIER))
 
 
-def _cross_report_corroboration_bonus(extracted: ExtractedReport, trust_score: float) -> int:
+@lru_cache(maxsize=1)
+def _load_model() -> xgb.Booster | None:
+    if xgb is None or not MODEL_PATH.exists():
+        return None
+
+    booster = xgb.Booster()
+    booster.load_model(str(MODEL_PATH))
+    return booster
+
+
+def _predict_with_xgb(features: dict[str, float]) -> float | None:
+    booster = _load_model()
+    if booster is None or xgb is None:
+        return None
+
+    vector = ordered_feature_vector(features)
+    matrix = xgb.DMatrix([vector], feature_names=FEATURE_ORDER)
+    prediction = float(booster.predict(matrix)[0])
+    return max(0.0, min(100.0, prediction))
+
+
+def _expanded_heuristic(features: dict[str, float]) -> float:
     """
-    Approximate corroboration in MVP mode without a reports DB query.
-    A higher bonus implies stronger indications that the report is not isolated.
+    Fallback risk function using more signals than the original phase-4 formula.
     """
-    bonus = 0
+    base = (
+        features["fever_cases"] * 8.5
+        + features["households_affected"] * 0.35
+        + features["stagnant_water"] * 15.0
+        + features["water_quality_issue"] * 11.0
+        + features["medicine_shortage"] * 8.0
+        + features["urgency_medium"] * 6.0
+        + features["urgency_high"] * 13.0
+        + features["vuln_children"] * 5.0
+        + features["vuln_elderly"] * 4.0
+        + features["vuln_pregnant"] * 4.0
+        + features["vuln_disabled"] * 4.0
+        + features["corroboration_bonus"] * 1.8
+        + features["fever_x_stagnant"] * 1.3
+        + features["water_x_shortage"] * 6.0
+    )
 
-    fever = extracted.fever_cases or 0
-    households = extracted.households_affected or 0
-    notes = (extracted.source_notes or "").lower()
+    confidence_scaler = 0.92 + (0.16 * features["extraction_confidence"] * features["trust_score"])
+    score = base * features["rain_multiplier"] * confidence_scaler
+    return max(0.0, min(100.0, score))
 
-    if fever >= 5 and extracted.stagnant_water:
-        bonus += 4
 
-    if households >= 25:
-        bonus += 3
+def _build_explanations(features: dict[str, float], model_used: bool) -> list[str]:
+    factors: list[str] = []
 
-    corroboration_terms = ["multiple", "several", "nearby", "same ward", "cluster"]
-    if any(term in notes for term in corroboration_terms):
-        bonus += 3
+    if features["fever_cases"] > 0:
+        factors.append(f"Fever cases: {int(features['fever_cases'])}")
+    if features["households_affected"] > 0:
+        factors.append(f"Households affected: {int(features['households_affected'])}")
+    if features["stagnant_water"] > 0:
+        factors.append("Stagnant water signal present")
+    if features["water_quality_issue"] > 0:
+        factors.append("Water quality issue reported")
+    if features["medicine_shortage"] > 0:
+        factors.append("Medicine shortage reported")
+    if features["urgency_high"] > 0:
+        factors.append("Urgency marked HIGH")
+    elif features["urgency_medium"] > 0:
+        factors.append("Urgency marked MEDIUM")
 
-    if trust_score >= 0.7:
-        bonus += 2
+    if features["vuln_children"] > 0:
+        factors.append("Children in vulnerable groups")
+    if features["vuln_elderly"] > 0:
+        factors.append("Elderly in vulnerable groups")
+    if features["vuln_pregnant"] > 0:
+        factors.append("Pregnant women in vulnerable groups")
+    if features["vuln_disabled"] > 0:
+        factors.append("Disabled persons in vulnerable groups")
 
-    return min(10, bonus)
+    factors.append(f"Rain multiplier: {features['rain_multiplier']:.2f}x")
+    factors.append(f"Trust score: {features['trust_score']:.2f}")
+    factors.append(f"Extraction confidence: {features['extraction_confidence']:.2f}")
+    factors.append(
+        "Scoring engine: XGBoost model"
+        if model_used
+        else "Scoring engine: Expanded heuristic fallback"
+    )
+
+    return factors
 
 
 def compute_risk_score(
@@ -86,48 +147,22 @@ def compute_risk_score(
     """
     Compute hotspot risk score (0–100), label, explanation, and escalation window.
     """
-    factors: list[str] = []
-    base = 0
-
-    # Fever contribution
     fever = extracted.fever_cases or 0
-    if fever > 0:
-        fever_pts = fever * 12
-        base += fever_pts
-        factors.append(f"{fever} fever case{'s' if fever != 1 else ''} (+{fever_pts} pts)")
-
-    # Stagnant water
-    if extracted.stagnant_water:
-        base += 25
-        factors.append("Stagnant water reported (+25 pts)")
-
-    # Water quality issue
-    if extracted.water_quality_issue:
-        base += 15
-        factors.append("Water contamination reported (+15 pts)")
-
-    # Medicine shortage
-    if extracted.medicine_shortage:
-        base += 10
-        factors.append("Medicine/ORS shortage (+10 pts)")
-
-    # Urgency
-    urgency = extracted.urgency_level
-    if urgency == "high":
-        base += 15
-        factors.append("Urgency reported as HIGH (+15 pts)")
-    elif urgency == "medium":
-        base += 8
-        factors.append("Urgency reported as MEDIUM (+8 pts)")
-
-    corroboration_bonus = _cross_report_corroboration_bonus(extracted, trust.trust_score)
-    if corroboration_bonus > 0:
-        base += corroboration_bonus
-        factors.append(f"Cross-report corroboration signal (+{corroboration_bonus} pts)")
 
     rain_multiplier = _rain_multiplier_for_ward(extracted.ward)
-    raw_score = base * rain_multiplier
-    final_score = int(min(100, raw_score))
+    corroboration_bonus = cross_report_corroboration_bonus(extracted, trust.trust_score)
+    feature_map = build_features(
+        extracted=extracted,
+        trust=trust,
+        rain_multiplier=rain_multiplier,
+        corroboration_bonus=corroboration_bonus,
+    )
+
+    model_score = _predict_with_xgb(feature_map)
+    model_used = model_score is not None
+    score_value = model_score if model_score is not None else _expanded_heuristic(feature_map)
+    final_score = int(round(score_value))
+    factors = _build_explanations(feature_map, model_used)
 
     if final_score >= 70:
         label = "High"
@@ -147,7 +182,7 @@ def compute_risk_score(
     ward_name = extracted.ward or "this area"
     explanation = (
         f"{ward_name} scores {final_score}/100 ({label} risk). "
-        f"Rain multiplier for ward: {rain_multiplier}×. "
+        f"Signals considered: {len(FEATURE_ORDER)} parameters. "
         f"Contributing factors: {'; '.join(factors) if factors else 'No signals detected'}."
     )
 
