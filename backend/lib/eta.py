@@ -35,7 +35,7 @@ def compute_eta(team: list[Volunteer], target_ward: str) -> tuple[int, str]:
     closest_volunteer = team[0]
 
     for volunteer in team:
-        vol_area = volunteer.area.lower().strip()
+        vol_area = volunteer.home_location.lower().strip()
         eta = _compute_mocked_eta(vol_area, target)
         if eta < min_eta:
             min_eta = eta
@@ -59,6 +59,6 @@ def _compute_mocked_eta(volunteer_area: str, target_ward: str) -> int:
 def _build_route_summary(volunteer: Volunteer, target_ward: str, eta: int) -> str:
     tier = "same ward" if eta == 15 else ("adjacent ward" if eta == 25 else "cross-city")
     return (
-        f"{volunteer.name} ({volunteer.area}) → {target_ward} via {tier} route. "
+        f"{volunteer.name} ({volunteer.home_location}) -> {target_ward} via {tier} route. "
         f"Estimated arrival: {eta} minutes."
     )

@@ -5,6 +5,8 @@ Selects a volunteer micro-team and computes ETA.
 
 import uuid
 from fastapi import APIRouter
+import firebase_admin
+from firebase_admin import firestore
 
 from models import DispatchRequest, DispatchPlan
 from lib.volunteers import select_team
@@ -30,8 +32,14 @@ async def dispatch_team(req: DispatchRequest) -> DispatchPlan:
 
     deployment_id = str(uuid.uuid4())
 
-    # TODO: store deployment in Firebase
-    # db.collection("deployments").document(deployment_id).set({...})
+    _store_deployment(
+        deployment_id=deployment_id,
+        report_id=req.report_id,
+        ward=req.ward,
+        intervention_title=req.intervention.title,
+        eta_minutes=eta_minutes,
+        team=[v.name for v in team],
+    )
 
     return DispatchPlan(
         deployment_id=deployment_id,
@@ -43,4 +51,33 @@ async def dispatch_team(req: DispatchRequest) -> DispatchPlan:
         ),
         eta_minutes=eta_minutes,
         route_summary=route_summary,
+    )
+
+
+def _store_deployment(
+    deployment_id: str,
+    report_id: str,
+    ward: str,
+    intervention_title: str,
+    eta_minutes: int,
+    team: list[str],
+) -> None:
+    """
+    Best-effort Firestore persistence.
+    Skips silently when Firebase is not initialized in local/dev environments.
+    """
+    if not firebase_admin._apps:
+        return
+
+    db = firestore.client()
+    db.collection("deployments").document(deployment_id).set(
+        {
+            "deployment_id": deployment_id,
+            "report_id": report_id,
+            "target_zone": ward,
+            "assigned_volunteers": team,
+            "intervention_title": intervention_title,
+            "route_eta": eta_minutes,
+            "status": "pending",
+        }
     )

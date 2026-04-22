@@ -1,0 +1,176 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import StepProgress from "@/app/components/StepProgress";
+import DispatchPanel from "@/app/components/DispatchPanel";
+import LoadingStateCard from "@/app/components/LoadingStateCard";
+import InlineAlert from "@/app/components/InlineAlert";
+import { dispatchTeam } from "@/lib/api";
+import type { DispatchPlan, PipelineState } from "@/lib/types";
+
+export default function DispatchPage() {
+  const router = useRouter();
+  const [pipeline, setPipeline] = useState<PipelineState | null>(null);
+  const [plan, setPlan] = useState<DispatchPlan | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const computeDispatch = useCallback(
+    async (state: PipelineState) => {
+      if (!state.interventions || !state.risk || !state.extracted || !state.reportId) {
+        router.replace("/intervention");
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const ward = state.extracted.ward ?? "Rohini";
+        const response = await dispatchTeam({
+          report_id: state.reportId,
+          ward,
+          intervention: state.interventions.primary,
+          risk: state.risk,
+        });
+
+        const nextState: PipelineState = { ...state, dispatch: response };
+        setPipeline(nextState);
+        setPlan(response);
+        localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unable to compute dispatch right now.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    const raw = localStorage.getItem("reliefos_pipeline");
+    if (!raw) {
+      router.replace("/upload");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as PipelineState;
+      setPipeline(parsed);
+
+      if (!parsed.interventions || !parsed.risk) {
+        router.replace("/intervention");
+        return;
+      }
+
+      if (parsed.dispatch) {
+        setPlan(parsed.dispatch);
+        setLoading(false);
+      } else {
+        void computeDispatch(parsed);
+      }
+    } catch {
+      router.replace("/upload");
+    }
+  }, [computeDispatch, router]);
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  if (loading) {
+    return (
+      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
+        <StepProgress currentStep={6} />
+        <LoadingStateCard
+          title="Matching volunteers and calculating ETA..."
+          subtitle="Skill match, load balancing, and ward proximity in progress"
+        />
+      </main>
+    );
+  }
+
+  if (!pipeline || !plan) {
+    return null;
+  }
+
+  return (
+    <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
+      <StepProgress currentStep={6} />
+
+      <div>
+        <h1 className="text-2xl font-bold text-relief-100">Volunteer Dispatch</h1>
+        <p className="text-relief-400 text-sm mt-1">
+          Dispatching the minimum capable team with fastest feasible arrival time.
+        </p>
+      </div>
+
+      {error && (
+        <InlineAlert
+          title="Dispatch planning failed"
+          message={error}
+          actionLabel="Retry dispatch planning"
+          onAction={() => void computeDispatch(pipeline)}
+        />
+      )}
+
+      <DispatchPanel team={plan.team} />
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card space-y-3">
+          <p className="label">Task Brief</p>
+          <p className="text-sm text-relief-300 leading-relaxed">{plan.task_brief}</p>
+          <p className="text-xs text-relief-500">Deployment ID: {plan.deployment_id}</p>
+        </div>
+
+        <div className="card space-y-3">
+          <p className="label">ETA</p>
+          <div className="flex items-end gap-2">
+            <p className="text-4xl font-bold text-accent-400 leading-none">{plan.eta_minutes}</p>
+            <p className="text-sm text-relief-400 mb-1">minutes</p>
+          </div>
+          <p className="text-xs text-relief-400">{plan.route_summary}</p>
+        </div>
+      </section>
+
+      <div className="card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-relief-100">Ready to mobilize team</p>
+          <p className="text-xs text-relief-500">Once confirmed, this deployment moves into active response.</p>
+        </div>
+
+        {!confirmed ? (
+          <button onClick={handleConfirm} className="btn-primary">
+            Confirm Dispatch
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 text-green-400 animate-pulse">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-sm font-semibold">Dispatch Confirmed</span>
+          </div>
+        )}
+      </div>
+
+      <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <p className="text-xs text-relief-500">Phase 6 complete: team matching, ETA, and dispatch confirmation.</p>
+        <div className="flex items-center gap-2">
+          <button onClick={() => router.push("/intervention")} className="btn-ghost text-sm">
+            Back to Intervention
+          </button>
+          <button
+            onClick={() => router.push("/feedback")}
+            className="btn-primary text-sm"
+            disabled={!confirmed}
+          >
+            Submit Feedback
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}

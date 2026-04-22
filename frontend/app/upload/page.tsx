@@ -9,6 +9,8 @@ import UploadDropzone  from "@/app/components/UploadDropzone";
 import OcrPreview      from "@/app/components/OcrPreview";
 import ExtractionReview from "@/app/components/ExtractionReview";
 import TrustBadge      from "@/app/components/TrustBadge";
+import LoadingStateCard from "@/app/components/LoadingStateCard";
+import InlineAlert from "@/app/components/InlineAlert";
 
 import { uploadReport, extractReport, scoreTrust } from "@/lib/api";
 import type { ExtractedReport, TrustResult, UploadResponse } from "@/lib/types";
@@ -127,26 +129,20 @@ export default function UploadPage() {
 
       {/* Processing banner */}
       {busy && (
-        <div className="card flex items-center gap-4 py-6">
-          <div className="relative flex items-center justify-center w-10 h-10 flex-shrink-0">
-            <span className="absolute w-full h-full rounded-full border-2 border-accent-500/30 animate-spin border-t-accent-500" />
-          </div>
-          <div>
-            <p className="text-relief-200 font-medium text-sm">{STAGE_LABELS[stage]}</p>
-            <p className="text-relief-500 text-xs mt-0.5">This usually takes 3–8 seconds</p>
-          </div>
-        </div>
+        <LoadingStateCard
+          title={STAGE_LABELS[stage]}
+          subtitle="This usually takes 3-8 seconds"
+        />
       )}
 
       {/* Error state */}
       {stage === "error" && (
-        <div className="card border-red-900/60 bg-red-950/30 space-y-3">
-          <p className="text-red-400 font-semibold text-sm">Analysis failed</p>
-          <p className="text-relief-400 text-xs font-mono">{error}</p>
-          <button onClick={handleReset} className="btn-ghost text-sm">
-            Try again
-          </button>
-        </div>
+        <InlineAlert
+          title="Analysis failed"
+          message={error ?? "Unexpected error"}
+          actionLabel="Try again"
+          onAction={handleReset}
+        />
       )}
 
       {/* ─── Results (only shown when done) ─────────────────────────────────── */}

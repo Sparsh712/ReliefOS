@@ -1,0 +1,12 @@
+# Environment and secret files
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# Allow safe templates
+!.env.example
+!backend/.env.example
+!frontend/.env.example

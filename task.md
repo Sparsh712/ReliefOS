@@ -134,29 +134,29 @@
 ## Phase 4: Risk Engine + Escalation Clock (⭐ Novelty Feature #2)
 
 ### Backend
-- [ ] Implement `lib/risk.py` — weighted hotspot scoring
+- [x] Implement `lib/risk.py` — weighted hotspot scoring
   - **Formula:** fuse fever_cases, stagnant_water, water_contamination, medicine_shortage, urgency, rain_multiplier, cross-report corroboration
   - **Output:** score (0–100) + label (Low/Medium/High) + explanation string
   - **Tech:** Python
-- [ ] Define ward data in `data/wards.json` — ward names, rain multipliers, coordinates
+- [x] Define ward data in `data/wards.json` — ward names, rain multipliers, coordinates
   - **Tech:** JSON static data
-- [ ] Implement escalation clock logic
+- [x] Implement escalation clock logic
   - Estimate days until area risk moves from current level to next level
   - Example: "Likely to escalate to High in ~4 days if no action taken"
   - **Tech:** Python (simple heuristic based on signal velocity)
-- [ ] Create `POST /risk` route in `routers/risk.py`
+- [x] Create `POST /risk` route in `routers/risk.py`
   - **Tech:** FastAPI
 
 ### Frontend
-- [ ] Build `RiskGauge.tsx` — large score gauge (0–100) with color gradient
+- [x] Build `RiskGauge.tsx` — large score gauge (0–100) with color gradient
   - **Tech:** React, CSS/SVG
-- [ ] Add risk label badge (Low/Medium/High)
+- [x] Add risk label badge (Low/Medium/High)
   - **Tech:** React, Tailwind
-- [ ] Build `EscalationClock.tsx` — countdown-style display showing days-to-escalation
+- [x] Build `EscalationClock.tsx` — countdown-style display showing days-to-escalation
   - **Tech:** React, Tailwind
-- [ ] Add explanation card listing contributing factors
+- [x] Add explanation card listing contributing factors
   - **Tech:** React, Tailwind
-- [ ] Build Hotspot Dashboard page (`app/dashboard/page.tsx`)
+- [x] Build Hotspot Dashboard page (`app/dashboard/page.tsx`)
   - Risk-ranked ward cards
   - Each card: ward name, score, label, escalation clock
   - **Tech:** Next.js
@@ -166,7 +166,7 @@
 ## Phase 5: Intervention Recommendation + Evidence Trail (⭐ Novelty Feature #3)
 
 ### Backend
-- [ ] Implement `lib/interventions.py` — deterministic rule engine
+- [x] Implement `lib/interventions.py` — deterministic rule engine
   - **Rules:**
     - stagnant_water + fever ≥ 3 → drain cleanup + awareness
     - fever ≥ 5 + children in vulnerable_groups → ORS + medical visit
@@ -175,20 +175,20 @@
   - **Ranking:** `score = risk_severity × trust × intervention_fit / travel_cost`
   - **Minimum Effective Intervention:** recommend smallest team/action likely to prevent escalation
   - **Tech:** Python
-- [ ] Generate evidence trail per recommendation: key facts, context signals, reasoning
+- [x] Generate evidence trail per recommendation: key facts, context signals, reasoning
   - **Tech:** Python string/dict building
-- [ ] Create `POST /interventions` route in `routers/interventions.py`
+- [x] Create `POST /interventions` route in `routers/interventions.py`
   - **Tech:** FastAPI
 
 ### Frontend
-- [ ] Build `InterventionCard.tsx` — card with title, rationale, urgency, team needs
+- [x] Build `InterventionCard.tsx` — card with title, rationale, urgency, team needs
   - **Tech:** React, Tailwind
-- [ ] Highlight primary recommendation, show 2 alternatives
+- [x] Highlight primary recommendation, show 2 alternatives
   - **Tech:** React, Tailwind
-- [ ] Build `EvidenceTrail.tsx` — "Why this decision?" panel
+- [x] Build `EvidenceTrail.tsx` — "Why this decision?" panel
   - Lists: extracted facts, corroborating signals, reasoning chain
   - **Tech:** React, Tailwind
-- [ ] Build Intervention Planner page (`app/intervention/page.tsx`)
+- [x] Build Intervention Planner page (`app/intervention/page.tsx`)
   - **Tech:** Next.js
 
 ---
@@ -196,32 +196,32 @@
 ## Phase 6: Volunteer Dispatch + ETA
 
 ### Backend
-- [ ] Create `data/volunteers.json` — mock volunteer data (8–10 volunteers)
+- [x] Create `data/volunteers.json` — mock volunteer data (8–10 volunteers)
   - **Fields:** name, skills[], home_location, availability, language, current_load, max_task_load
   - **Tech:** JSON static data
-- [ ] Implement `lib/volunteers.py` — team matching
+- [x] Implement `lib/volunteers.py` — team matching
   - Filter by: skill match, availability, load capacity, language
   - Sort by: area proximity, current load
   - Select micro-team of 3–5
   - **Tech:** Python
-- [ ] Implement `lib/eta.py` — mocked ETA computation
+- [x] Implement `lib/eta.py` — mocked ETA computation
   - same ward = 15 min, adjacent ward = 25 min, far ward = 40 min
   - Comment-stub for Routes API swap if key becomes available
   - **Tech:** Python (pure mock logic)
-- [ ] Create `POST /dispatch` route in `routers/dispatch.py`
+- [x] Create `POST /dispatch` route in `routers/dispatch.py`
   - Store deployment in Firestore
   - **Tech:** FastAPI
 
 ### Frontend
-- [ ] Build `DispatchPanel.tsx` — volunteer team cards (name, skills, area, language)
+- [x] Build `DispatchPanel.tsx` — volunteer team cards (name, skills, area, language)
   - **Tech:** React, Tailwind
-- [ ] Add task brief summary card
+- [x] Add task brief summary card
   - **Tech:** React, Tailwind
-- [ ] Add ETA display (minutes + clock icon)
+- [x] Add ETA display (minutes + clock icon)
   - **Tech:** React, Tailwind
-- [ ] Add "Confirm Dispatch" button → success state with checkmark animation
+- [x] Add "Confirm Dispatch" button → success state with checkmark animation
   - **Tech:** React, CSS transitions
-- [ ] Build Dispatch page (`app/dispatch/page.tsx`)
+- [x] Build Dispatch page (`app/dispatch/page.tsx`)
   - **Tech:** Next.js
 
 ---
@@ -229,40 +229,40 @@
 ## Phase 7: Feedback Loop
 
 ### Backend
-- [ ] Create `POST /feedback` route in `routers/feedback.py`
+- [x] Create `POST /feedback` route in `routers/feedback.py`
   - Accept: people_reached, resolved (y/n), remaining_issues, notes
   - Update deployment status in Firestore
   - Slightly adjust ward risk score (+/- based on resolution)
   - **Tech:** FastAPI, Firestore
 
 ### Frontend
-- [ ] Build `FeedbackForm.tsx` — post-task form
+- [x] Build `FeedbackForm.tsx` — post-task form
   - Fields: people reached (number), issue resolved (toggle), remaining issues (text), optional photo
   - **Tech:** React, Tailwind
-- [ ] Show updated risk score after feedback submission
+- [x] Show updated risk score after feedback submission
   - **Tech:** React
-- [ ] Build Feedback page (`app/feedback/page.tsx`)
+- [x] Build Feedback page (`app/feedback/page.tsx`)
   - **Tech:** Next.js
 
 ---
 
 ## Phase 8: Cross-Cutting UI & Navigation
 
-- [ ] Build `Header.tsx` — ReliefOS branding, minimal nav links
+- [x] Build `Header.tsx` — ReliefOS branding, minimal nav links
   - **Tech:** React, Tailwind
-- [ ] Build root `layout.tsx` with header
+- [x] Build root `layout.tsx` with header
   - **Tech:** Next.js App Router
-- [ ] Build `StepProgress.tsx` — horizontal pipeline indicator
+- [x] Build `StepProgress.tsx` — horizontal pipeline indicator
   - Steps: Upload → Extract → Trust → Risk → Intervene → Dispatch → Feedback
   - **Tech:** React, CSS
-- [ ] Configure `globals.css` with Tailwind base + design tokens
+- [x] Configure `globals.css` with Tailwind base + design tokens
   - Neutral palette + one accent color (e.g., slate + amber)
   - **Tech:** Tailwind CSS, CSS custom properties
-- [ ] Add loading spinners/skeletons between pipeline stages
+- [x] Add loading spinners/skeletons between pipeline stages
   - **Tech:** React, Tailwind
-- [ ] Add error handling UI (inline alerts for API failures)
+- [x] Add error handling UI (inline alerts for API failures)
   - **Tech:** React
-- [ ] Ensure responsive layout (desktop-first, basic mobile)
+- [x] Ensure responsive layout (desktop-first, basic mobile)
   - **Tech:** Tailwind responsive classes
 
 ---

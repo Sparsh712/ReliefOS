@@ -1,31 +1,82 @@
 """
 lib/risk.py — Dengue/monsoon hotspot risk scoring + escalation clock.
 
-Formula (from claude.md):
+Formula (Phase 4):
     base = fever_cases * 12
          + 25 if stagnant_water
          + 15 if water_quality_issue
          + 10 if medicine_shortage
          + 15 if urgency == "high"
          +  8 if urgency == "medium"
+         + corroboration_bonus
 
     final_score = min(100, base * rain_multiplier)
 
 Escalation clock: estimate days-to-next-risk-level based on signal velocity.
 """
 
+from __future__ import annotations
+
+import json
+from functools import lru_cache
+from pathlib import Path
+
 from models import ExtractedReport, TrustResult, RiskResult
 
-# Ward-level rain multipliers for Delhi wards (mock data)
-WARD_RAIN_MULTIPLIERS: dict[str, float] = {
-    "rohini":        1.4,
-    "dwarka":        1.2,
-    "seelampur":     1.3,
-    "laxmi nagar":   1.1,
-    "laxminagar":    1.1,
-    "najafgarh":     1.35,
-    "default":       1.2,  # fallback for unknown wards
-}
+
+DEFAULT_RAIN_MULTIPLIER = 1.2
+
+
+@lru_cache(maxsize=1)
+def _ward_multiplier_map() -> dict[str, float]:
+    data_path = Path(__file__).resolve().parent.parent / "data" / "wards.json"
+    try:
+        raw = json.loads(data_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    mapping: dict[str, float] = {}
+    for row in raw:
+        ward_name = str(row.get("ward", "")).strip().lower()
+        multiplier = row.get("rain_multiplier")
+        if ward_name and isinstance(multiplier, (int, float)):
+            mapping[ward_name] = float(multiplier)
+            mapping[ward_name.replace(" ", "")] = float(multiplier)
+    return mapping
+
+
+def _rain_multiplier_for_ward(ward: str | None) -> float:
+    if not ward:
+        return DEFAULT_RAIN_MULTIPLIER
+    key = ward.strip().lower()
+    return _ward_multiplier_map().get(key, _ward_multiplier_map().get(key.replace(" ", ""), DEFAULT_RAIN_MULTIPLIER))
+
+
+def _cross_report_corroboration_bonus(extracted: ExtractedReport, trust_score: float) -> int:
+    """
+    Approximate corroboration in MVP mode without a reports DB query.
+    A higher bonus implies stronger indications that the report is not isolated.
+    """
+    bonus = 0
+
+    fever = extracted.fever_cases or 0
+    households = extracted.households_affected or 0
+    notes = (extracted.source_notes or "").lower()
+
+    if fever >= 5 and extracted.stagnant_water:
+        bonus += 4
+
+    if households >= 25:
+        bonus += 3
+
+    corroboration_terms = ["multiple", "several", "nearby", "same ward", "cluster"]
+    if any(term in notes for term in corroboration_terms):
+        bonus += 3
+
+    if trust_score >= 0.7:
+        bonus += 2
+
+    return min(10, bonus)
 
 
 def compute_risk_score(
@@ -69,9 +120,12 @@ def compute_risk_score(
         base += 8
         factors.append("Urgency reported as MEDIUM (+8 pts)")
 
-    # Ward rain multiplier
-    ward_key = (extracted.ward or "default").lower().strip()
-    rain_multiplier = WARD_RAIN_MULTIPLIERS.get(ward_key, WARD_RAIN_MULTIPLIERS["default"])
+    corroboration_bonus = _cross_report_corroboration_bonus(extracted, trust.trust_score)
+    if corroboration_bonus > 0:
+        base += corroboration_bonus
+        factors.append(f"Cross-report corroboration signal (+{corroboration_bonus} pts)")
+
+    rain_multiplier = _rain_multiplier_for_ward(extracted.ward)
     raw_score = base * rain_multiplier
     final_score = int(min(100, raw_score))
 

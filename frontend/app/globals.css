@@ -63,4 +63,21 @@
   .mono-block {
     @apply bg-relief-900 border border-relief-700 rounded-lg p-4 font-mono text-sm text-relief-300;
   }
+
+  /* Skeleton placeholder */
+  .skeleton {
+    @apply rounded-md bg-relief-700/80;
+    background-image: linear-gradient(90deg, rgba(148, 163, 184, 0.08), rgba(245, 158, 11, 0.12), rgba(148, 163, 184, 0.08));
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.6s linear infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

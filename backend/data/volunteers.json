@@ -1,12 +1,12 @@
 [
-  { "name": "Aisha",  "skills": ["medical", "community"],     "area": "Rohini",      "available": true,  "language": "Hindi", "current_load": 1 },
-  { "name": "Rohan",  "skills": ["logistics", "field_ops"],   "area": "Dwarka",      "available": true,  "language": "Hindi", "current_load": 0 },
-  { "name": "Nisha",  "skills": ["awareness", "community"],   "area": "Seelampur",   "available": true,  "language": "Hindi", "current_load": 2 },
-  { "name": "Faizan", "skills": ["medical"],                  "area": "Laxmi Nagar", "available": true,  "language": "Hindi", "current_load": 0 },
-  { "name": "Kabir",  "skills": ["sanitation", "field_ops"],  "area": "Najafgarh",   "available": true,  "language": "Hindi", "current_load": 1 },
-  { "name": "Priya",  "skills": ["awareness", "medical"],     "area": "Rohini",      "available": true,  "language": "Hindi", "current_load": 0 },
-  { "name": "Suresh", "skills": ["sanitation", "logistics"],  "area": "Seelampur",   "available": true,  "language": "Hindi", "current_load": 1 },
-  { "name": "Meena",  "skills": ["community", "field_ops"],   "area": "Dwarka",      "available": false, "language": "Hindi", "current_load": 3 },
-  { "name": "Deepak", "skills": ["medical", "logistics"],     "area": "Laxmi Nagar", "available": true,  "language": "Hindi", "current_load": 0 },
-  { "name": "Sunita", "skills": ["awareness", "sanitation"],  "area": "Najafgarh",   "available": true,  "language": "Hindi", "current_load": 0 }
+  { "name": "Aisha",  "skills": ["medical", "community"],     "home_location": "Rohini",      "availability": true,  "language": "Hindi", "current_load": 1, "max_task_load": 3 },
+  { "name": "Rohan",  "skills": ["logistics", "field_ops"],   "home_location": "Dwarka",      "availability": true,  "language": "Hindi", "current_load": 0, "max_task_load": 3 },
+  { "name": "Nisha",  "skills": ["awareness", "community"],   "home_location": "Seelampur",   "availability": true,  "language": "Hindi", "current_load": 2, "max_task_load": 4 },
+  { "name": "Faizan", "skills": ["medical"],                    "home_location": "Laxmi Nagar", "availability": true,  "language": "Hindi", "current_load": 0, "max_task_load": 3 },
+  { "name": "Kabir",  "skills": ["sanitation", "field_ops"],  "home_location": "Najafgarh",   "availability": true,  "language": "Hindi", "current_load": 1, "max_task_load": 3 },
+  { "name": "Priya",  "skills": ["awareness", "medical"],     "home_location": "Rohini",      "availability": true,  "language": "Hindi", "current_load": 0, "max_task_load": 3 },
+  { "name": "Suresh", "skills": ["sanitation", "logistics"],  "home_location": "Seelampur",   "availability": true,  "language": "Hindi", "current_load": 1, "max_task_load": 3 },
+  { "name": "Meena",  "skills": ["community", "field_ops"],   "home_location": "Dwarka",      "availability": false, "language": "Hindi", "current_load": 3, "max_task_load": 3 },
+  { "name": "Deepak", "skills": ["medical", "logistics"],     "home_location": "Laxmi Nagar", "availability": true,  "language": "Hindi", "current_load": 0, "max_task_load": 4 },
+  { "name": "Sunita", "skills": ["awareness", "sanitation"],  "home_location": "Najafgarh",   "availability": true,  "language": "Hindi", "current_load": 0, "max_task_load": 3 }
 ]

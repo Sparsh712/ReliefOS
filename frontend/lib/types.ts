@@ -81,10 +81,11 @@ export interface EvidenceTrail {
 export interface Volunteer {
   name: string;
   skills: string[];
-  area: string;
-  available: boolean;
+  home_location: string;
+  availability: boolean;
   language: string;
   current_load: number;
+  max_task_load: number;
 }
 
 export interface DispatchPlan {

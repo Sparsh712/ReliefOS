@@ -5,7 +5,7 @@ All routers import from here; keeps schemas in one place.
 
 from __future__ import annotations
 from typing import Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 
 # ─── Upload / OCR ────────────────────────────────────────────────────────────
@@ -114,10 +114,11 @@ class InterventionsRequest(BaseModel):
 class Volunteer(BaseModel):
     name: str
     skills: list[str]
-    area: str
-    available: bool
+    home_location: str = Field(validation_alias=AliasChoices("home_location", "area"))
+    availability: bool = Field(validation_alias=AliasChoices("availability", "available"))
     language: str
     current_load: int = 0
+    max_task_load: int = 3
 
 
 class DispatchPlan(BaseModel):
