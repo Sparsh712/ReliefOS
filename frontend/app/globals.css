@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0f172a;       /* relief-950 */
+    --bg-surface: #1e293b;       /* relief-800 */
+    --bg-elevated: #334155;      /* relief-700 */
+    --text-primary: #f1f5f9;     /* relief-100 */
+    --text-secondary: #94a3b8;   /* relief-400 */
+    --text-muted: #64748b;       /* relief-500 */
+    --accent: #f59e0b;           /* amber-500 */
+    --accent-dim: #d97706;       /* amber-600 */
+    --border: #334155;           /* relief-700 */
+    --border-subtle: #1e293b;    /* relief-800 */
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    @apply min-h-full bg-relief-950 text-relief-100 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Card surface */
+  .card {
+    @apply bg-relief-800 border border-relief-700 rounded-xl p-5;
+  }
+
+  /* Accent button */
+  .btn-primary {
+    @apply bg-accent-500 hover:bg-accent-400 text-relief-950 font-semibold
+           px-5 py-2.5 rounded-lg transition-colors duration-150 disabled:opacity-50;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply border border-relief-600 hover:border-accent-500 hover:text-accent-400
+           text-relief-300 font-medium px-4 py-2 rounded-lg transition-colors duration-150;
+  }
+
+  /* Section label */
+  .label {
+    @apply text-xs font-semibold uppercase tracking-widest text-relief-400;
+  }
+
+  /* Risk badge */
+  .badge-low    { @apply bg-green-900/40  text-green-400  border border-green-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-medium { @apply bg-amber-900/40  text-amber-400  border border-amber-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-high   { @apply bg-red-900/40    text-red-400    border border-red-700    px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+
+  /* Trust badge */
+  .badge-trust-high   { @apply bg-green-900/40 text-green-400  border border-green-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-trust-medium { @apply bg-amber-900/40 text-amber-400  border border-amber-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-trust-low    { @apply bg-red-900/40   text-red-400    border border-red-700    px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+
+  /* Code/mono block */
+  .mono-block {
+    @apply bg-relief-900 border border-relief-700 rounded-lg p-4 font-mono text-sm text-relief-300;
+  }
+}
