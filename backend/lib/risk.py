@@ -47,6 +47,30 @@ def _ward_multiplier_map() -> dict[str, float]:
     return mapping
 
 
+@lru_cache(maxsize=1)
+def _ward_adjacency_map() -> dict[str, list[str]]:
+    data_path = Path(__file__).resolve().parent.parent / "data" / "wards.json"
+    try:
+        raw = json.loads(data_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    mapping: dict[str, list[str]] = {}
+    for row in raw:
+        ward_name = str(row.get("ward", "")).strip().lower()
+        adjacent = row.get("adjacent", [])
+        if ward_name and isinstance(adjacent, list):
+            mapping[ward_name] = adjacent
+    return mapping
+
+
+def _get_adjacent_wards(ward: str | None) -> list[str]:
+    if not ward:
+        return []
+    key = ward.strip().lower()
+    return _ward_adjacency_map().get(key, [])
+
+
 def _rain_multiplier_for_ward(ward: str | None) -> float:
     if not ward:
         return DEFAULT_RAIN_MULTIPLIER
@@ -186,6 +210,15 @@ def compute_risk_score(
         f"Contributing factors: {'; '.join(factors) if factors else 'No signals detected'}."
     )
 
+    silent_zone_warnings = []
+    if final_score >= 60 and extracted.ward:
+        adjacent = _get_adjacent_wards(extracted.ward)
+        for adj in adjacent:
+            # Mock heuristic: Assume we haven't received reports from adjacent wards today
+            silent_zone_warnings.append(
+                f"{adj} is adjacent to {extracted.ward} (High Risk) but has zero recent reports. Flagged as a potential Silent Zone."
+            )
+
     return RiskResult(
         score=final_score,
         label=label,
@@ -193,6 +226,7 @@ def compute_risk_score(
         escalation_window=escalation_window,
         contributing_factors=factors,
         rain_multiplier=rain_multiplier,
+        silent_zone_warnings=silent_zone_warnings,
     )
 
 

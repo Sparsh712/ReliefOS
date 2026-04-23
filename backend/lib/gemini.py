@@ -25,8 +25,9 @@ Required fields:
 - report_id (string, use the value provided)
 - location_text (string or null — free-text location description)
 - ward (string or null — ward/block name)
-- geo_hint (string or null — any address hint)
-- households_affected (integer or null)
+- geo_hint (string or null — any address, sector, or landmark hint)
+- households_surveyed (integer or null — count of households surveyed or visited)
+- households_affected (integer or null — count of households negatively affected)
 - fever_cases (integer or null — count of fever cases mentioned)
 - stagnant_water (boolean or null — true if stagnant water is mentioned)
 - medicine_shortage (boolean or null — true if medicine/ORS shortage mentioned)
@@ -103,7 +104,8 @@ def _mock_extraction(report_id: str, ocr_text: str) -> ExtractedReport:
         location_text="Rohini Block C, Lane 4 area",
         ward="Rohini",
         geo_hint="Block C, near drain gate",
-        households_affected=34,
+        households_surveyed=34,
+        households_affected=None,
         fever_cases=8,
         stagnant_water="stagnant" in text_lower or "drain" in text_lower,
         medicine_shortage="ors" in text_lower or "paracetamol" in text_lower or "shortage" in text_lower,

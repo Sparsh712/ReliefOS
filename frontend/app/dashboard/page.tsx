@@ -8,6 +8,8 @@ import RiskGauge from "@/app/components/RiskGauge";
 import EscalationClock from "@/app/components/EscalationClock";
 import LoadingStateCard from "@/app/components/LoadingStateCard";
 import InlineAlert from "@/app/components/InlineAlert";
+import WardLeaderboard from "@/app/components/WardLeaderboard";
+import WardMap from "@/app/components/WardMap";
 import { scoreRisk } from "@/lib/api";
 import type { PipelineState, RiskResult } from "@/lib/types";
 
@@ -195,6 +197,20 @@ export default function DashboardPage() {
         <EscalationClock escalationWindow={risk.escalation_window} label={risk.label} />
       </div>
 
+      {risk.silent_zone_warnings && risk.silent_zone_warnings.length > 0 && (
+        <div className="space-y-3">
+          {risk.silent_zone_warnings.map((warning, i) => (
+            <div key={i} className="bg-amber-950/40 border border-amber-800 rounded-xl p-4 flex items-start gap-3">
+              <span className="text-xl">🚨</span>
+              <div>
+                <h3 className="text-sm font-semibold text-amber-500">Silent Zone Detected</h3>
+                <p className="text-xs text-amber-200/70 mt-0.5 leading-relaxed">{warning}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="card space-y-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-relief-100">Risk Explanation</h2>
@@ -219,30 +235,17 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-relief-100">Ward Priority Queue</h2>
-          <p className="text-xs text-relief-500">Sorted by current and nearby projected risk</p>
-        </div>
+      <WardLeaderboard
+        wards={rankedWards.map((w) => ({
+          ...w,
+          isCurrent: w.ward.toLowerCase() === (pipeline.extracted?.ward ?? "").toLowerCase(),
+        }))}
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {rankedWards.map((item) => (
-            <article key={item.ward} className="card p-4">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-base font-semibold text-relief-100">{item.ward}</h3>
-                <span className={badgeClass(item.label)}>{item.label}</span>
-              </div>
-
-              <div className="mt-3 flex items-end justify-between">
-                <p className="text-3xl font-bold text-relief-100 leading-none">{item.score}</p>
-                <p className="text-xs text-relief-500">/100</p>
-              </div>
-
-              <p className="text-xs text-relief-400 mt-2">{item.escalation}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <WardMap
+        scores={rankedWards}
+        currentWard={pipeline.extracted?.ward}
+      />
 
       <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <p className="text-xs text-relief-500">Phase 4 complete: risk score, label, escalation clock, and hotspot ranking.</p>

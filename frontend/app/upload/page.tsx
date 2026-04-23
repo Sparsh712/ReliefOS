@@ -180,8 +180,13 @@ export default function UploadPage() {
             <OcrPreview text={upload.raw_ocr_text} confidence={upload.ocr_confidence} />
           </div>
 
-          {/* Extraction review */}
-          <ExtractionReview report={extracted} />
+          {/* Extraction review — editable */}
+          <ExtractionReview
+            report={extracted}
+            onUpdate={(updated) =>
+              setState((s) => ({ ...s, extracted: updated }))
+            }
+          />
 
           {/* Trust badge */}
           <TrustBadge trust={trust} />

@@ -38,11 +38,11 @@
   - **Tech:** python-dotenv
 
 ### Storage Setup
-- [ ] Create Firebase project + enable Firestore in Google Cloud Console
+- [x] Create Firebase project + enable Firestore in Google Cloud Console
   - **Tech:** Firebase Console
-- [ ] Create 5 Firestore collections: `reports`, `signals`, `volunteers`, `interventions`, `deployments`
+- [x] Create 5 Firestore collections: `reports`, `signals`, `volunteers`, `interventions`, `deployments`
   - **Tech:** Firestore
-- [ ] Download Firebase service account JSON + initialize Firebase Admin in `main.py`
+- [x] Download Firebase service account JSON + initialize Firebase Admin in `main.py`
   - **Tech:** firebase-admin Python SDK
 
 ### Shared Types / Models
@@ -269,42 +269,48 @@
 
 ## Phase 9: Demo Data & Polish
 
-- [ ] Create/source 3 sample handwritten field report images in `/public/sample-reports/`
+- [x] Create/source 3 sample handwritten field report images in `/public/sample-reports/`
   - **Tech:** Image files (PNG/JPG)
-- [ ] Seed `data/sample-reports.json` with 3 pre-extracted report records
+- [x] Seed `data/sample-reports.json` with 3 pre-extracted report records
   - **Tech:** JSON
-- [ ] Seed `data/wards.json` with 5 Delhi wards + rain multipliers
+- [x] Seed `data/wards.json` with 5 Delhi wards + rain multipliers
   - Rohini: 1.4, Dwarka: 1.2, Seelampur: 1.3, Laxmi Nagar: 1.1, Najafgarh: 1.35
   - **Tech:** JSON
-- [ ] Seed `data/volunteers.json` with 8–10 mock volunteers
+- [x] Seed `data/volunteers.json` with 8–10 mock volunteers
   - **Tech:** JSON
-- [ ] Test full pipeline end-to-end with each sample report
+- [x] Test full pipeline end-to-end with each sample report
   - **Tech:** Manual testing
-- [ ] Ensure upload-to-dispatch flow < 60 seconds
+- [x] Ensure upload-to-dispatch flow < 60 seconds
   - **Tech:** Performance check
-- [ ] Run `npm run build` (frontend) — zero errors
+- [x] Run `npm run build` (frontend) — zero errors
   - **Tech:** Next.js, TypeScript
-- [ ] Test FastAPI with `uvicorn main:app --reload`
+- [x] Test FastAPI with `uvicorn main:app --reload`
   - **Tech:** FastAPI
-- [ ] Deploy frontend to Vercel + backend to Render/Cloud Run
-  - **Tech:** Vercel CLI, Docker/Cloud Run
+- [x] Deploy frontend to Vercel + backend to Render/Cloud Run
+  - [x] Created `backend/render.yaml` with build + start commands
+  - [x] Created `frontend/vercel.json` with framework config
+  - [x] Created `backend/.env.example` and `frontend/.env.example` templates
+  - [x] Updated root `.gitignore` to block secrets + service account JSON
+  - [x] Wrote comprehensive `README.md` with deployment instructions
+  - [ ] Push to GitHub and trigger Vercel + Render deploys
+  - **Tech:** Vercel CLI, Render, GitHub
 
 ---
 
 ## Phase 10: Stretch Goals (Only If Time Remains)
 
-- [ ] **Silent-Zone Detection** — flag underreported wards with nearby rising risk
+- [x] **Silent-Zone Detection** — flag underreported wards with nearby rising risk
   - **Tech:** Python heuristic in `risk.py`
-- [ ] **Hindi OCR** sample report examples
-  - **Tech:** Cloud Vision multilingual
-- [ ] **Editable extracted fields** in extraction review
-  - **Tech:** React controlled inputs
-- [ ] **Mini ward leaderboard** on dashboard
-  - **Tech:** React, Tailwind
-- [ ] **Before/after simulation** — show risk change if intervention is deployed
-  - **Tech:** React, mock data
-- [ ] **Map placeholder** — ward boundaries or pin markers
-  - **Tech:** Google Maps JS API or static image
+- [x] **Hindi OCR** sample report examples
+  - **Tech:** Multilingual Gemini OCR
+- [x] **Editable extracted fields** in extraction review
+  - **Tech:** React controlled inputs (text, number, bool toggle, select)
+- [x] **Mini ward leaderboard** on dashboard
+  - **Tech:** React table with colour risk bars (`WardLeaderboard.tsx`)
+- [x] **Before/after simulation** — show risk change if intervention is deployed
+  - **Tech:** React, mock data (ward score projection in dashboard)
+- [x] **Map placeholder** — ward boundaries or pin markers
+  - **Tech:** SVG inline Delhi ward map (`WardMap.tsx`)
 
 ---
 

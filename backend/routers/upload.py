@@ -26,8 +26,18 @@ async def upload_report(file: UploadFile = File(...)) -> UploadResponse:
 
     ocr_text, confidence = await extract_text_from_image(image_bytes)
 
-    # TODO: store report stub in Firebase Firestore here
-    # db.collection("reports").document(report_id).set({...})
+    # Store report stub in Firebase Firestore
+    import firebase_admin
+    from firebase_admin import firestore
+    
+    if firebase_admin._apps:
+        db = firestore.client()
+        db.collection("reports").document(report_id).set({
+            "report_id": report_id,
+            "raw_ocr_text": ocr_text,
+            "ocr_confidence": confidence,
+            "status": "uploaded",
+        })
 
     return UploadResponse(
         report_id=report_id,

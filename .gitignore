@@ -5,8 +5,32 @@ backend/.env
 backend/.env.*
 frontend/.env
 frontend/.env.*
+frontend/.env.local
 
 # Allow safe templates
 !.env.example
 !backend/.env.example
 !frontend/.env.example
+
+# Firebase service account (NEVER commit)
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!backend/data/*.json
+!frontend/public/**/*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node
+node_modules/
+.next/
+
+# OS
+.DS_Store
+Thumbs.db

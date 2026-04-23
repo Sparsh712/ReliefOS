@@ -24,6 +24,7 @@ class ExtractedReport(BaseModel):
     location_text: Optional[str] = None
     ward: Optional[str] = None
     geo_hint: Optional[str] = None
+    households_surveyed: Optional[int] = None
     households_affected: Optional[int] = None
     fever_cases: Optional[int] = None
     stagnant_water: Optional[bool] = None
@@ -70,6 +71,7 @@ class RiskResult(BaseModel):
     escalation_window: str           # e.g. "~4 days"
     contributing_factors: list[str]
     rain_multiplier: float
+    silent_zone_warnings: list[str] = []
 
 
 class RiskRequest(BaseModel):

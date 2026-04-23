@@ -20,6 +20,7 @@ export interface ExtractedReport {
   location_text: string | null;
   ward: string | null;
   geo_hint: string | null;
+  households_surveyed: number | null;
   households_affected: number | null;
   fever_cases: number | null;
   stagnant_water: boolean | null;
@@ -52,6 +53,7 @@ export interface RiskResult {
   escalation_window: string;       // e.g. "~4 days"
   contributing_factors: string[];
   rain_multiplier: number;
+  silent_zone_warnings: string[];
 }
 
 // ─── Intervention ─────────────────────────────────────────────────────────────

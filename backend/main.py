@@ -18,6 +18,24 @@ app = FastAPI(
     version="0.1.0",
 )
 
+import os
+import firebase_admin
+from firebase_admin import credentials
+
+# ─── Firebase Init ────────────────────────────────────────────────────────────
+project_id = os.getenv("FIREBASE_PROJECT_ID")
+if not firebase_admin._apps and project_id and not project_id.startswith("YOUR_"):
+    cred = credentials.Certificate({
+        "type": "service_account",
+        "project_id": project_id,
+        "private_key": os.getenv("FIREBASE_PRIVATE_KEY", "").replace("\\n", "\n"),
+        "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+        "token_uri": "https://oauth2.googleapis.com/token",
+    })
+    firebase_admin.initialize_app(cred)
+    print("Firebase Admin initialized successfully from environment variables.")
+
+
 # ─── CORS ─────────────────────────────────────────────────────────────────────
 # Allow the Next.js dev server and Vercel preview URLs.
 app.add_middleware(
