@@ -40,11 +40,7 @@ if not firebase_admin._apps and project_id and not project_id.startswith("YOUR_"
 # Allow the Next.js dev server and Vercel preview URLs.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://*.vercel.app",   # Vercel preview deployments
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
