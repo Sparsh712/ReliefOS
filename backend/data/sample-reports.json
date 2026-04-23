@@ -1,0 +1,95 @@
+[
+  {
+    "report_id": "demo-rohini-001",
+    "image_url": "/sample-reports/report-rohini.png",
+    "raw_ocr_text": "Date: 15 Nov 2024\nWard: Rohini, Block C\nReported by: Community health worker\n\nHouseholds surveyed: 34\nFever cases (last 7 days): 8\nChildren affected: 4 (ages 3-12)\nElderly affected: 2\n\nObservations:\n- Stagnant water found behind lane 4 and near drain gate\n- Water supply pipe leaking near house no. 47\n- 2 families report water looks brownish\n- Local dispensary out of ORS and paracetamol\n- Residents burning garbage near water collection point\n\nUrgency: HIGH - fever cases rising daily\nRequesting: medical volunteers, drain cleanup, ORS supply",
+    "ocr_confidence": 0.92,
+    "extracted": {
+      "report_id": "demo-rohini-001",
+      "location_text": "Rohini Block C, Lane 4 area",
+      "ward": "Rohini",
+      "geo_hint": "Block C, near drain gate, house no. 47",
+      "households_affected": 34,
+      "fever_cases": 8,
+      "stagnant_water": true,
+      "medicine_shortage": true,
+      "water_quality_issue": true,
+      "vulnerable_groups": ["children", "elderly"],
+      "urgency_level": "high",
+      "source_notes": "Community health worker field report. Garbage burning near water source noted. Dispensary out of ORS and paracetamol.",
+      "extraction_confidence": 0.91
+    },
+    "trust": {
+      "trust_score": 0.82,
+      "confidence_label": "High",
+      "factors": [
+        "High OCR confidence (0.92)",
+        "Multiple corroborating risk signals (stagnant water, fever, contamination)",
+        "Named reporter with specific location references",
+        "Specific household count and case breakdown provided"
+      ]
+    }
+  },
+  {
+    "report_id": "demo-seelampur-001",
+    "image_url": "/sample-reports/report-seelampur.png",
+    "raw_ocr_text": "Date: 14 Nov 2024\nWard: Seelampur, Sector 7\nReported by: NGO field coordinator\n\nHouseholds visited: 22\nFever/flu symptoms: 5\nChildren under 10: 3 affected\n\nObservations:\n- Open drain overflow near market area\n- Standing water on main road after last rain\n- No medical volunteers available in area\n- 1 family drinking from unsafe source\n\nUrgency: MEDIUM\nRequesting: drain team, water purification tablets",
+    "ocr_confidence": 0.87,
+    "extracted": {
+      "report_id": "demo-seelampur-001",
+      "location_text": "Seelampur Sector 7, near market",
+      "ward": "Seelampur",
+      "geo_hint": "Sector 7, main road near market area",
+      "households_affected": 22,
+      "fever_cases": 5,
+      "stagnant_water": true,
+      "medicine_shortage": false,
+      "water_quality_issue": true,
+      "vulnerable_groups": ["children"],
+      "urgency_level": "medium",
+      "source_notes": "NGO field coordinator report. Drain overflow and standing water. One family drinking unsafe water.",
+      "extraction_confidence": 0.85
+    },
+    "trust": {
+      "trust_score": 0.74,
+      "confidence_label": "High",
+      "factors": [
+        "Good OCR confidence (0.87)",
+        "NGO-verified coordinator report",
+        "Moderate signal count with corroborating observations",
+        "Specific sector location provided"
+      ]
+    }
+  },
+  {
+    "report_id": "demo-najafgarh-001",
+    "image_url": "/sample-reports/report-najafgarh.png",
+    "raw_ocr_text": "Date: 13 Nov 2024\nWard: Najafgarh, Village Dhansa\nReported by: ASHA worker\n\nHouses checked: 18\nFever cases: 3\nElderly patients: 1\n\nNotes:\n- Small pond near fields has algae and smell\n- Mosquito nets not used - awareness needed\n- Pharmacy only open 2 days a week\n- Children still attending school but 2 absences noted\n\nUrgency: LOW to MEDIUM\nNeed: awareness camp, mosquito nets, pharmacy support",
+    "ocr_confidence": 0.83,
+    "extracted": {
+      "report_id": "demo-najafgarh-001",
+      "location_text": "Najafgarh, Village Dhansa near fields",
+      "ward": "Najafgarh",
+      "geo_hint": "Village Dhansa, near pond and agricultural fields",
+      "households_affected": 18,
+      "fever_cases": 3,
+      "stagnant_water": true,
+      "medicine_shortage": true,
+      "water_quality_issue": false,
+      "vulnerable_groups": ["elderly"],
+      "urgency_level": "medium",
+      "source_notes": "ASHA worker report. Pond with algae near fields, low mosquito net usage. Pharmacy access limited.",
+      "extraction_confidence": 0.81
+    },
+    "trust": {
+      "trust_score": 0.65,
+      "confidence_label": "Medium",
+      "factors": [
+        "Moderate OCR confidence (0.83)",
+        "ASHA worker report - credible but limited verification",
+        "Fewer corroborating signals than Rohini/Seelampur reports",
+        "Mixed urgency level indicates uncertainty"
+      ]
+    }
+  }
+]

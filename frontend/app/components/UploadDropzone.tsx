@@ -10,6 +10,7 @@ interface UploadDropzoneProps {
 const SAMPLE_REPORTS = [
   { label: "Rohini – High Risk",    src: "/sample-reports/report-rohini.png",    filename: "report-rohini.png"    },
   { label: "Seelampur – Medium",    src: "/sample-reports/report-seelampur.png", filename: "report-seelampur.png" },
+  { label: "Najafgarh – Low-Med",   src: "/sample-reports/report-najafgarh.png", filename: "report-najafgarh.png" },
 ];
 
 export default function UploadDropzone({ onFile, disabled }: UploadDropzoneProps) {
