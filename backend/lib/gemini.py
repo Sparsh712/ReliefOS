@@ -60,7 +60,7 @@ async def extract_structured_report(report_id: str, ocr_text: str) -> ExtractedR
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-3.1-flash-lite-preview")
 
         prompt = f"{EXTRACTION_PROMPT}\n\nReport ID: {report_id}\n\nOCR Text:\n{ocr_text}"
         response = model.generate_content(prompt)

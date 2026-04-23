@@ -26,7 +26,7 @@ async def extract_text_from_image(image_bytes: bytes) -> tuple[str, float]:
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-3.1-flash-lite-preview")
 
         # Convert bytes to PIL Image for Gemini SDK
         image = Image.open(io.BytesIO(image_bytes))

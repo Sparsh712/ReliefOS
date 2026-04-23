@@ -33,4 +33,12 @@ node_modules/
 
 # OS
 .DS_Store
-Thumbs.db
+Thumbs.db
+
+# Other files
+backend/test_models.py
+.vscode/
+.idea/
+implementation_plan.md
+task.md
+claude.md

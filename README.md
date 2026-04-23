@@ -38,7 +38,7 @@ graph TD
     end
 
     subgraph External Services
-        Gemini[Google Gemini 2.5 Flash]
+        Gemini[Google Gemini 3.1 Flash Lite Preview]
         Firebase[(Firebase Firestore)]
     end
 
@@ -54,7 +54,7 @@ graph TD
 ### Tech Stack
 * **Frontend:** Next.js 14, React, Tailwind CSS, TypeScript (Deployed on Vercel)
 * **Backend:** FastAPI, Pydantic, Python 3.10+ (Deployed on Render)
-* **AI/ML:** Google Gemini 2.5 Flash (OCR + Extraction), XGBoost (Risk prediction model)
+* **AI/ML:** Google Gemini 3.1 Flash Lite Preview (OCR + Extraction), XGBoost (Risk prediction model)
 * **Database:** Firebase Firestore (Persistence & Feedback Loop)
 
 ---
@@ -100,7 +100,7 @@ sequenceDiagram
 ```
 
 ### Stage Details
-1. **Upload & OCR:** A field worker uploads a photo. The system uses **Gemini 2.5 Flash** natively to perform multimodal OCR, perfectly transcribing messy handwriting across multiple languages (including Hindi).
+1. **Upload & OCR:** A field worker uploads a photo. The system uses **Gemini 3.1 Flash Lite Preview** natively to perform multimodal OCR, perfectly transcribing messy handwriting across multiple languages (including Hindi).
 2. **Extraction:** Gemini structures the raw OCR text into a strict JSON schema, extracting metrics like `fever_cases`, `stagnant_water`, `households_surveyed`, and `urgency`. This stub is immediately saved to Firestore. Users get a human-in-the-loop review interface to correct any AI errors.
 3. **Trust & Verification:** The system computes a **Trust Score (0-1)** using heuristics. It analyzes OCR confidence, missing field rates, contradictory symptom patterns, and cross-report agreement. A low trust score penalizes the risk severity to prevent false alarms.
 4. **Risk Scoring Engine:** The core predictive layer. It feeds the extracted features into an **XGBoost regression model** to predict an anticipatory hotspot score (0-100). The model uses historical rain multipliers by ward, geographical adjacency, and symptom severity. If XGBoost is unavailable, it gracefully falls back to an expanded deterministic heuristic. It also calculates an **Escalation Clock** (estimating days until the situation worsens) and features **Silent Zone Detection** to flag quiet wards surrounded by high-risk outbreaks.
@@ -188,7 +188,7 @@ npm run dev
 
 | Variable | Location | Purpose |
 |---|---|---|
-| `GEMINI_API_KEY` | Backend | Powers the OCR & Structured Extraction (Gemini 2.5 Flash) |
+| `GEMINI_API_KEY` | Backend | Powers the OCR & Structured Extraction (Gemini 3.1 Flash Lite Preview) |
 | `FIREBASE_PROJECT_ID` | Backend | Links to the Firestore database for deployments |
 | `FIREBASE_CLIENT_EMAIL` | Backend | Firebase Admin Auth Service Account Email |
 | `FIREBASE_PRIVATE_KEY` | Backend | Firebase Admin Auth Private Key |
