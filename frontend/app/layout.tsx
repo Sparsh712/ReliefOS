@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Inter, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/Layout/Header";
