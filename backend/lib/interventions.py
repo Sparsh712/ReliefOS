@@ -112,6 +112,36 @@ def rank_interventions(
     primary = candidates[0]
     alternatives = candidates[1:3]
 
+    # Guarantee at least 2 alternatives for the UI — add fallbacks if needed
+    fallback_pool = [
+        Intervention(
+            title="Safe Water Kit Distribution + Field Inspection",
+            description="Distribute water purification tablets and inspect water supply lines.",
+            rationale="Preventive measure — water contamination risk exists given current fever spread.",
+            urgency="medium",
+            team_composition=["field_ops", "sanitation"],
+            minimum_effective="1 field inspector + water test kit (1 hour)",
+            ranking_score=round(risk_severity * trust.trust_score * _FIT["water_kit"] * 0.75 / _TRAVEL_COST, 3),
+        ),
+        Intervention(
+            title="General Awareness + Monitoring Drive",
+            description="Conduct door-to-door awareness campaign and monitor ward for 48 hours.",
+            rationale="Community sensitization reduces disease spread regardless of current severity.",
+            urgency="low",
+            team_composition=["awareness", "community"],
+            minimum_effective="2 community volunteers (2 hours)",
+            ranking_score=round(risk_severity * trust.trust_score * _FIT["awareness"] * 0.60 / _TRAVEL_COST, 3),
+        ),
+    ]
+
+    existing_titles = {a.title for a in alternatives}
+    for fb in fallback_pool:
+        if len(alternatives) >= 2:
+            break
+        if fb.title not in existing_titles and fb.title != primary.title:
+            alternatives.append(fb)
+            existing_titles.add(fb.title)
+
     evidence_trail = _build_evidence_trail(extracted, risk, primary)
     return InterventionsResult(
         primary=primary,
