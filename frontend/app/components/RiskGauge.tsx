@@ -83,11 +83,17 @@ export default function RiskGauge({ score, label }: RiskGaugeProps) {
         </div>
       </div>
 
-      <div className="text-center">
-        <h3 className={`text-xl font-bold ${getColor()}`}>
-          {label} Severity
-        </h3>
-        <p className="text-sm text-relief-400 mt-1 max-w-[200px]">
+      <div className="text-center space-y-3">
+        <span className={`inline-block px-6 py-2 text-sm font-black uppercase tracking-widest border-2 shadow-[4px_4px_0px_0px] ${
+          score >= 70
+            ? "bg-red-500 border-red-700 text-white shadow-red-900"
+            : score >= 40
+            ? "bg-amber-400 border-amber-600 text-gray-900 shadow-amber-900"
+            : "bg-green-500 border-green-700 text-white shadow-green-900"
+        }`}>
+          {label} Risk
+        </span>
+        <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-[200px]">
           Hotspot detection based on fever velocity and local conditions.
         </p>
       </div>

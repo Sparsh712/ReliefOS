@@ -143,15 +143,18 @@ export default function DispatchPage() {
         </div>
 
         {!confirmed ? (
-          <button onClick={handleConfirm} className="btn-primary">
-            Confirm Dispatch
+          <button
+            onClick={handleConfirm}
+            className="px-8 py-3 text-sm font-black uppercase tracking-widest bg-red-600 text-white border-2 border-red-800 shadow-[4px_4px_0px_0px_rgba(127,29,29,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all rounded-sm"
+          >
+            🚨 Confirm Dispatch
           </button>
         ) : (
-          <div className="flex items-center gap-2 text-green-400 animate-pulse">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <div className="flex items-center gap-3 bg-green-500/20 border-2 border-green-500 px-6 py-3 rounded-sm">
+            <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-            <span className="text-sm font-semibold">Dispatch Confirmed</span>
+            <span className="text-sm font-black uppercase tracking-widest text-green-400">Dispatch Confirmed</span>
           </div>
         )}
       </div>
