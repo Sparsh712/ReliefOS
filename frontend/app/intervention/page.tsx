@@ -90,6 +90,13 @@ export default function InterventionPage() {
     return null;
   }
 
+  // Always show 2 alternative cards — pad if API returns only 1
+  const alternatives = result.alternatives.length >= 2
+    ? result.alternatives.slice(0, 2)
+    : result.alternatives.length === 1
+    ? [result.alternatives[0], result.alternatives[0]]
+    : [];
+
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
 
@@ -109,17 +116,17 @@ export default function InterventionPage() {
         />
       )}
 
-      <div className="grid grid-cols-1 gap-4">
-        <InterventionCard intervention={result.primary} kind="primary" />
+      {/* Primary recommendation — full width */}
+      <InterventionCard intervention={result.primary} kind="primary" />
 
-        {result.alternatives.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {result.alternatives.map((item) => (
-              <InterventionCard key={item.title} intervention={item} kind="alternative" />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Alternatives — always 2 columns */}
+      {alternatives.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {alternatives.map((item, idx) => (
+            <InterventionCard key={`alt-${idx}`} intervention={item} kind="alternative" />
+          ))}
+        </div>
+      )}
 
       <EvidenceTrail evidence={result.evidence_trail} />
 
