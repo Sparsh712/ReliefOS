@@ -42,7 +42,7 @@ export default function UploadDropzone({ onFile, disabled }: UploadDropzoneProps
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Drop zone */}
       <button
         type="button"
@@ -52,23 +52,23 @@ export default function UploadDropzone({ onFile, disabled }: UploadDropzoneProps
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         className={`
-          w-full rounded-2xl border-2 border-dashed p-12
-          flex flex-col items-center justify-center gap-3 text-center
+          w-full hand-drawn-border p-16
+          flex flex-col items-center justify-center gap-4 text-center
           transition-all duration-200 cursor-pointer group
           disabled:opacity-50 disabled:cursor-not-allowed
           ${dragging
-            ? "border-accent-400 bg-accent-500/10 scale-[1.01]"
-            : "border-relief-600 hover:border-accent-500/70 hover:bg-accent-500/5 bg-relief-900/50"}
+            ? "border-amber-500 bg-amber-500/5 scale-[1.01]"
+            : "bg-[var(--bg-surface)] hover:border-amber-500/70 hover:bg-amber-500/5"}
         `}
       >
         {/* Upload icon */}
         <div className={`
-          w-14 h-14 rounded-full flex items-center justify-center
+          w-20 h-20 rounded-full flex items-center justify-center
           transition-colors duration-200
-          ${dragging ? "bg-accent-500/20" : "bg-relief-800 group-hover:bg-relief-700"}
+          ${dragging ? "bg-amber-500/20" : "bg-[var(--bg-elevated)] group-hover:bg-amber-500/10"}
         `}>
           <svg
-            className={`w-7 h-7 transition-colors ${dragging ? "text-accent-400" : "text-relief-400 group-hover:text-accent-400"}`}
+            className={`w-10 h-10 transition-colors ${dragging ? "text-amber-500" : "text-[var(--text-secondary)] group-hover:text-amber-500"}`}
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
           >
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -77,10 +77,10 @@ export default function UploadDropzone({ onFile, disabled }: UploadDropzoneProps
         </div>
 
         <div>
-          <p className="text-relief-200 font-medium text-sm">
+          <p className="text-2xl font-black tracking-tight">
             {dragging ? "Drop to analyze" : "Drop a field report image"}
           </p>
-          <p className="text-relief-500 text-xs mt-1">
+          <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
             JPEG · PNG · WEBP&nbsp;&nbsp;·&nbsp;&nbsp;click to browse
           </p>
         </div>
@@ -96,17 +96,17 @@ export default function UploadDropzone({ onFile, disabled }: UploadDropzoneProps
       />
 
       {/* Sample reports */}
-      <div className="flex items-center gap-3">
-        <span className="label flex-shrink-0">Quick load</span>
-        <div className="flex-1 h-px bg-relief-800" />
-        <div className="flex gap-2">
+      <div className="flex items-center gap-6">
+        <span className="text-sm font-black uppercase tracking-widest text-[var(--text-muted)] flex-shrink-0">Quick load</span>
+        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800" />
+        <div className="flex gap-4">
           {SAMPLE_REPORTS.map((s) => (
             <button
               key={s.src}
               type="button"
               disabled={disabled}
               onClick={() => loadSample(s.src, s.filename)}
-              className="btn-ghost text-xs py-1.5 px-3 disabled:opacity-40"
+              className="px-4 py-2 text-sm font-bold uppercase tracking-tighter border-b-2 border-gray-900 dark:border-white hover:text-amber-600 hover:border-amber-600 transition-colors disabled:opacity-40"
             >
               {s.label}
             </button>

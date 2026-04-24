@@ -1,11 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/Layout/Header";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const marker = Permanent_Marker({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-marker",
   display: "swap",
 });
 
@@ -16,16 +22,20 @@ export const metadata: Metadata = {
   keywords: ["NGO", "disaster relief", "dengue", "anticipatory action", "field reports"],
 };
 
+import { Providers } from "./components/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <Header />
-        {children}
+    <html lang="en" className={`${inter.variable} ${marker.variable} h-full`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col">
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

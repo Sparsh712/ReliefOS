@@ -116,8 +116,8 @@ export default function UploadPage() {
 
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-relief-100">Upload Field Report</h1>
-        <p className="text-relief-400 text-sm mt-1">
+        <h1 className="text-3xl font-black tracking-tight">Upload Field Report</h1>
+        <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
           Upload a handwritten or printed NGO field report to begin analysis.
         </p>
       </div>
@@ -192,18 +192,16 @@ export default function UploadPage() {
           <TrustBadge trust={trust} />
 
           {/* CTA */}
-          <div className="flex items-center justify-between pt-2 border-t border-relief-800">
-            <p className="text-xs text-relief-500">
-              Report ID: <span className="font-mono text-relief-400">{upload.report_id.slice(0, 8)}…</span>
+          <div className="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-gray-800">
+            <p className="text-sm text-[var(--text-muted)]">
+              Report ID: <span className="font-mono text-[var(--text-secondary)]">{upload.report_id.slice(0, 8)}…</span>
             </p>
             <button
               onClick={handleContinue}
-              className="btn-primary flex items-center gap-2"
+              className="btn-human flex items-center gap-2 px-10"
             >
               View Risk Dashboard
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
+              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         </div>

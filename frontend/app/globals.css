@@ -4,80 +4,83 @@
 
 @layer base {
   :root {
-    --bg-primary: #0f172a;       /* relief-950 */
-    --bg-surface: #1e293b;       /* relief-800 */
-    --bg-elevated: #334155;      /* relief-700 */
-    --text-primary: #f1f5f9;     /* relief-100 */
-    --text-secondary: #94a3b8;   /* relief-400 */
-    --text-muted: #64748b;       /* relief-500 */
-    --accent: #f59e0b;           /* amber-500 */
-    --accent-dim: #d97706;       /* amber-600 */
-    --border: #334155;           /* relief-700 */
-    --border-subtle: #1e293b;    /* relief-800 */
+    --bg-primary: #fdfaf6;       /* Warm paper white */
+    --bg-surface: #ffffff;
+    --bg-elevated: #f3f4f6;
+    --text-primary: #1f2937;     /* Dark ink gray */
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --accent: #d97706;           /* Earthy amber */
+    --accent-dark: #b45309;
+    --success: #059669;          /* Forest green */
+    --border: #e5e7eb;
+  }
+
+  /* Dark mode: 'Midnight Command Center' aesthetic */
+  .dark {
+    --bg-primary: #0a0a0b;       /* Deep ink black */
+    --bg-surface: #121214;       /* Slate charcoal */
+    --bg-elevated: #1a1a1c;
+    --text-primary: #ffffff;     /* Pure white for high contrast */
+    --text-secondary: #a1a1aa;   /* Soft slate gray */
+    --text-muted: #52525b;
+    --accent: #fbbf24;           /* Glowing amber */
+    --accent-dark: #d97706;
+    --success: #10b981;
+    --border: #27272a;
   }
 
   html {
-    height: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply min-h-full bg-relief-950 text-relief-100 antialiased;
+    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased overflow-x-hidden;
     font-family: 'Inter', system-ui, sans-serif;
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  }
+
+  .dark body {
+    background-image: radial-gradient(circle at 50% 50%, #1a1a1c 0%, #0a0a0b 100%), url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
   }
 }
 
 @layer components {
-  /* Card surface */
-  .card {
-    @apply bg-relief-800 border border-relief-700 rounded-xl p-5;
+  .paper-card {
+    @apply bg-white border border-gray-200 shadow-sm rounded-sm p-8 transition-all duration-300;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.05), 15px 15px 30px rgba(0,0,0,0.02);
+    transform: rotate(-0.5deg);
   }
 
-  /* Accent button */
-  .btn-primary {
-    @apply bg-accent-500 hover:bg-accent-400 text-relief-950 font-semibold
-           px-5 py-2.5 rounded-lg transition-colors duration-150 disabled:opacity-50;
+  .paper-card:hover {
+    @apply shadow-xl;
+    transform: rotate(0deg) translateY(-5px);
   }
 
-  /* Ghost button */
-  .btn-ghost {
-    @apply border border-relief-600 hover:border-accent-500 hover:text-accent-400
-           text-relief-300 font-medium px-4 py-2 rounded-lg transition-colors duration-150;
+  .btn-human {
+    @apply relative bg-[#1f2937] text-white px-8 py-4 rounded-sm font-bold tracking-tight
+           transition-all duration-300 border-2 border-[#1f2937] hover:bg-transparent
+           hover:text-[#1f2937] active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
   }
 
-  /* Section label */
-  .label {
-    @apply text-xs font-semibold uppercase tracking-widest text-relief-400;
+  .text-ink {
+    @apply font-serif italic text-[#1f2937];
   }
 
-  /* Risk badge */
-  .badge-low    { @apply bg-green-900/40  text-green-400  border border-green-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-  .badge-medium { @apply bg-amber-900/40  text-amber-400  border border-amber-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-  .badge-high   { @apply bg-red-900/40    text-red-400    border border-red-700    px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-
-  /* Trust badge */
-  .badge-trust-high   { @apply bg-green-900/40 text-green-400  border border-green-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-  .badge-trust-medium { @apply bg-amber-900/40 text-amber-400  border border-amber-700  px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-  .badge-trust-low    { @apply bg-red-900/40   text-red-400    border border-red-700    px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-
-  /* Code/mono block */
-  .mono-block {
-    @apply bg-relief-900 border border-relief-700 rounded-lg p-4 font-mono text-sm text-relief-300;
-  }
-
-  /* Skeleton placeholder */
-  .skeleton {
-    @apply rounded-md bg-relief-700/80;
-    background-image: linear-gradient(90deg, rgba(148, 163, 184, 0.08), rgba(245, 158, 11, 0.12), rgba(148, 163, 184, 0.08));
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.6s linear infinite;
+  .hand-drawn-border {
+    border: 3px solid #1f2937;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   }
 }
 
-@keyframes skeleton-shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+/* Realistic Animations */
+@keyframes scribble {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
 }
+
+.animate-scribble {
+  stroke-dasharray: 1000;
+  animation: scribble 2s ease-in-out infinite alternate;
+}
+
