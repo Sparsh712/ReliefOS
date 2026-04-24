@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import StepProgress    from "@/app/components/StepProgress";
 import UploadDropzone  from "@/app/components/UploadDropzone";
 import OcrPreview      from "@/app/components/OcrPreview";
 import ExtractionReview from "@/app/components/ExtractionReview";
@@ -113,7 +112,6 @@ export default function UploadPage() {
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
       {/* Step progress */}
-      <StepProgress currentStep={1} />
 
       {/* Page header */}
       <div>

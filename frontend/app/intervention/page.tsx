@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import StepProgress from "@/app/components/StepProgress";
 import InterventionCard from "@/app/components/InterventionCard";
 import EvidenceTrail from "@/app/components/EvidenceTrail";
 import LoadingStateCard from "@/app/components/LoadingStateCard";
@@ -79,7 +78,6 @@ export default function InterventionPage() {
   if (loading) {
     return (
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-        <StepProgress currentStep={5} />
         <LoadingStateCard
           title="Generating minimum effective intervention plan..."
           subtitle="Applying deterministic field rules with trust and risk weighting"
@@ -94,7 +92,6 @@ export default function InterventionPage() {
 
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-      <StepProgress currentStep={5} />
 
       <div>
         <h1 className="text-3xl font-black tracking-tight">Intervention Planner</h1>

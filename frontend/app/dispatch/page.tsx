@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import StepProgress from "@/app/components/StepProgress";
 import DispatchPanel from "@/app/components/DispatchPanel";
 import LoadingStateCard from "@/app/components/LoadingStateCard";
 import InlineAlert from "@/app/components/InlineAlert";
@@ -84,7 +83,6 @@ export default function DispatchPage() {
   if (loading) {
     return (
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-        <StepProgress currentStep={6} />
         <LoadingStateCard
           title="Matching volunteers and calculating ETA..."
           subtitle="Skill match, load balancing, and ward proximity in progress"
@@ -99,7 +97,6 @@ export default function DispatchPage() {
 
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-      <StepProgress currentStep={6} />
 
       <div>
         <h1 className="text-3xl font-black tracking-tight">Volunteer Dispatch</h1>

@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import StepProgress from "@/app/components/StepProgress";
 import FeedbackForm from "@/app/components/FeedbackForm";
 import InlineAlert from "@/app/components/InlineAlert";
 import { submitFeedback } from "@/lib/api";
@@ -77,7 +76,6 @@ export default function FeedbackPage() {
 
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-      <StepProgress currentStep={7} />
 
       <div>
         <h1 className="text-3xl font-black tracking-tight">Feedback Loop</h1>

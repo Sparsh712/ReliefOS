@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import StepProgress from "@/app/components/StepProgress";
 import RiskGauge from "@/app/components/RiskGauge";
 import EscalationClock from "@/app/components/EscalationClock";
 import LoadingStateCard from "@/app/components/LoadingStateCard";
@@ -159,7 +158,6 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-        <StepProgress currentStep={4} />
         <LoadingStateCard
           title="Computing hotspot risk and escalation clock..."
           subtitle="Using extracted signals and ward rainfall multiplier"
@@ -174,7 +172,6 @@ export default function DashboardPage() {
 
   return (
     <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-8">
-      <StepProgress currentStep={4} />
 
       <div>
         <h1 className="text-3xl font-black tracking-tight">Hotspot Risk Dashboard</h1>
