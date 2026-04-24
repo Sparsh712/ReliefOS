@@ -20,18 +20,37 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [hasUpload, setHasUpload] = useState(false);
+  const [dispatchConfirmed, setDispatchConfirmed] = useState(false);
   const [showGateToast, setShowGateToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState({ title: "", description: "" });
 
   useEffect(() => {
     setMounted(true);
     // Check if user has completed an upload
-    const pipeline = localStorage.getItem("reliefos_pipeline");
-    setHasUpload(!!pipeline);
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
+    setHasUpload(!!raw);
+    if (raw) {
+      try {
+        const pipeline = JSON.parse(raw);
+        setDispatchConfirmed(!!pipeline.dispatchConfirmed);
+      } catch (e) {}
+    }
   }, [pathname]); // Re-check on route change (after upload completes)
 
+  const isLocked = (href: string) => {
+    if (!hasUpload) return true;
+    if (href === "/feedback" && !dispatchConfirmed) return true;
+    return false;
+  };
+
   const handleGatedClick = (e: React.MouseEvent, href: string) => {
-    if (!hasUpload) {
+    if (isLocked(href)) {
       e.preventDefault();
+      if (!hasUpload) {
+        setToastMessage({ title: "Upload Required", description: "Process a field report first to unlock this section." });
+      } else {
+        setToastMessage({ title: "Dispatch Required", description: "Confirm a team dispatch before submitting feedback." });
+      }
       setShowGateToast(true);
       setTimeout(() => setShowGateToast(false), 3000);
     }
@@ -68,23 +87,25 @@ export default function Header() {
             </Link>
 
             {/* Gated links */}
-            {GATED_LINKS.map((link) => (
+            {GATED_LINKS.map((link) => {
+              const locked = isLocked(link.href);
+              return (
               <Link
                 key={link.href}
-                href={hasUpload ? link.href : "#"}
+                href={locked ? "#" : link.href}
                 onClick={(e) => handleGatedClick(e, link.href)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold uppercase tracking-widest rounded-sm transition-all ${
-                  !hasUpload
+                  locked
                     ? "text-gray-300 dark:text-gray-700 cursor-not-allowed"
                     : isActive(link.href)
                     ? "text-gray-900 dark:text-white bg-amber-500/10 border-b-2 border-amber-600"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
-                {!hasUpload && <Lock className="w-3 h-3" />}
+                {locked && <Lock className="w-3 h-3" />}
                 {link.label}
               </Link>
-            ))}
+            )})}
 
             <div className="flex items-center gap-4 ml-4 pl-4 border-l border-[var(--border)]">
               {mounted && (
@@ -99,7 +120,12 @@ export default function Header() {
                 </button>
               )}
               <Link href="/upload">
-                <button className="btn-human py-2 px-6 text-xs">
+                <button onClick={() => {
+                  if (hasUpload) {
+                    localStorage.removeItem("reliefos_pipeline");
+                    sessionStorage.removeItem("reliefos_pipeline");
+                  }
+                }} className="btn-human py-2 px-6 text-xs">
                   {hasUpload ? "New Report" : "Start Here"}
                 </button>
               </Link>
@@ -143,12 +169,14 @@ export default function Header() {
             </Link>
 
             {/* Gated links on mobile */}
-            {GATED_LINKS.map((link) => (
+            {GATED_LINKS.map((link) => {
+              const locked = isLocked(link.href);
+              return (
               <Link
                 key={link.href}
-                href={hasUpload ? link.href : "#"}
+                href={locked ? "#" : link.href}
                 onClick={(e) => {
-                  if (hasUpload) {
+                  if (!locked) {
                     setIsOpen(false);
                   } else {
                     handleGatedClick(e, link.href);
@@ -156,7 +184,7 @@ export default function Header() {
                   }
                 }}
                 className={`flex items-center justify-between py-4 border-b border-[var(--border)] text-xl font-black uppercase tracking-tighter ${
-                  !hasUpload
+                  locked
                     ? "text-gray-400 dark:text-gray-600"
                     : isActive(link.href)
                     ? "text-amber-600"
@@ -164,12 +192,12 @@ export default function Header() {
                 }`}
               >
                 {link.label}
-                {!hasUpload
+                {locked
                   ? <Lock className="w-4 h-4 text-gray-400 dark:text-gray-600" />
                   : <span className="text-xs text-gray-400">→</span>
                 }
               </Link>
-            ))}
+            )})}
 
             {!hasUpload && (
               <p className="pt-4 text-sm text-[var(--text-muted)] font-medium">
@@ -186,14 +214,21 @@ export default function Header() {
           <div className="hand-drawn-border bg-[var(--bg-surface)] px-8 py-4 shadow-2xl flex items-center gap-4">
             <Lock className="w-5 h-5 text-amber-500 flex-shrink-0" />
             <div>
-              <p className="font-black text-sm uppercase tracking-widest">Upload Required</p>
+              <p className="font-black text-sm uppercase tracking-widest">{toastMessage.title}</p>
               <p className="text-[var(--text-secondary)] text-sm mt-0.5">
-                Process a field report first to unlock this section.
+                {toastMessage.description}
               </p>
             </div>
-            <Link href="/upload" className="ml-4">
-              <button className="btn-human py-2 px-4 text-xs whitespace-nowrap">Go to Upload →</button>
-            </Link>
+            {!hasUpload && (
+              <Link href="/upload" className="ml-4">
+                <button className="btn-human py-2 px-4 text-xs whitespace-nowrap">Go to Upload →</button>
+              </Link>
+            )}
+            {hasUpload && !dispatchConfirmed && (
+              <Link href="/dispatch" className="ml-4">
+                <button className="btn-human py-2 px-4 text-xs whitespace-nowrap">Go to Dispatch →</button>
+              </Link>
+            )}
           </div>
         </div>
       )}

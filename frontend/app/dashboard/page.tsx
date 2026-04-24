@@ -71,16 +71,20 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
       try {
-        const scored = await scoreRisk({
+        const response = await scoreRisk({
           report_id: state.reportId,
           extracted: state.extracted,
           trust: state.trust,
         });
 
-        const nextState: PipelineState = { ...state, risk: scored };
+        const nextState: PipelineState = { ...state, risk: response };
         setPipeline(nextState);
-        setRisk(scored);
-        localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        setRisk(response);
+        if (localStorage.getItem("reliefos_pipeline")) {
+          localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        } else {
+          sessionStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to score risk right now.");
       } finally {
@@ -91,7 +95,7 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    const raw = localStorage.getItem("reliefos_pipeline");
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
     if (!raw) {
       router.replace("/upload");
       return;
@@ -245,7 +249,11 @@ export default function DashboardPage() {
       />
 
       <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
-        <button onClick={() => router.push("/upload")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
+        <button onClick={() => {
+          localStorage.removeItem("reliefos_pipeline");
+          sessionStorage.removeItem("reliefos_pipeline");
+          router.push("/upload");
+        }} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
           ← Analyze Another Report
         </button>
         <button onClick={() => router.push("/intervention")} className="btn-human px-8 py-3 text-sm">

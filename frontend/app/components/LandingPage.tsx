@@ -29,15 +29,16 @@ export default function LandingPage() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   
   // Folder reveal
-  const folderY = useTransform(scrollYProgress, [0.1, 0.4], [500, 0]);
-  const folderScale = useTransform(scrollYProgress, [0.1, 0.4], [0.8, 1]);
+  const folderY = useTransform(scrollYProgress, [0, 0.3], [400, 0]);
+  const folderScale = useTransform(scrollYProgress, [0, 0.3], [0.8, 1]);
+  const folderOpacity = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
   
   // Map slide
-  const mapX = useTransform(scrollYProgress, [0.5, 0.8], [1000, 0]);
-  const mapOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
+  const mapX = useTransform(scrollYProgress, [0.25, 0.55], [1000, 0]);
+  const mapOpacity = useTransform(scrollYProgress, [0.25, 0.5], [0, 1]);
 
   return (
-    <div ref={containerRef} className="relative min-h-[400vh] bg-[#fdfaf6] dark:bg-[#0a0a0b] text-gray-900 dark:text-gray-100 selection:bg-amber-200 overflow-x-hidden">
+    <div ref={containerRef} className="relative min-h-[300vh] bg-[#fdfaf6] dark:bg-[#0a0a0b] text-gray-900 dark:text-gray-100 selection:bg-amber-200 overflow-x-hidden">
       
       {/* Cinematic Hero (Fixed) */}
       <section className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden z-10">
@@ -100,7 +101,7 @@ export default function LandingPage() {
       {/* The Folder Unfold (Scroll Reveal) */}
       <section className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden z-20 pointer-events-none">
         <motion.div 
-          style={{ y: folderY, scale: folderScale }}
+          style={{ y: folderY, scale: folderScale, opacity: folderOpacity }}
           className="relative max-w-5xl w-full aspect-video pointer-events-auto"
         >
           <div className="absolute inset-0 bg-white dark:bg-gray-800 shadow-[0_50px_100px_rgba(0,0,0,0.2)] hand-drawn-border p-4 overflow-hidden">
@@ -108,6 +109,8 @@ export default function LandingPage() {
               src="/folder_open.png" 
               alt="Open Folder" 
               fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              priority
               className="object-cover opacity-90"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-gray-900 via-transparent to-transparent" />
@@ -139,6 +142,7 @@ export default function LandingPage() {
               src="/tactical_map.png" 
               alt="Tactical Map" 
               fill
+              sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover"
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />

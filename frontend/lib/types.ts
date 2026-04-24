@@ -112,9 +112,11 @@ export interface PipelineState {
   reportId: string | null;
   imageUrl: string | null;
   ocrText: string | null;
+  ocrConfidence?: number;
   extracted: ExtractedReport | null;
   trust: TrustResult | null;
   risk: RiskResult | null;
   interventions: InterventionsResult | null;
   dispatch: DispatchPlan | null;
+  dispatchConfirmed?: boolean;
 }

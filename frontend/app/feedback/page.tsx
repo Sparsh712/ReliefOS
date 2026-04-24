@@ -16,7 +16,7 @@ export default function FeedbackPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem("reliefos_pipeline");
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
     if (!raw) {
       router.replace("/upload");
       return;
@@ -25,7 +25,7 @@ export default function FeedbackPage() {
     try {
       const parsed = JSON.parse(raw) as PipelineState;
       setPipeline(parsed);
-      if (!parsed.dispatch || !parsed.risk) {
+      if (!parsed.dispatch || !parsed.risk || !parsed.dispatchConfirmed) {
         router.replace("/dispatch");
       }
     } catch {
@@ -59,7 +59,11 @@ export default function FeedbackPage() {
             },
           };
           setPipeline(nextState);
-          localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+          if (localStorage.getItem("reliefos_pipeline")) {
+            localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+          } else {
+            sessionStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to submit feedback.");
@@ -115,8 +119,12 @@ export default function FeedbackPage() {
         <button onClick={() => router.push("/dispatch")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
           ← Back to Dispatch
         </button>
-        <button onClick={() => router.push("/upload")} className="btn-human px-8 py-3 text-sm">
-          Start New Report →
+        <button onClick={() => {
+          localStorage.removeItem("reliefos_pipeline");
+          sessionStorage.removeItem("reliefos_pipeline");
+          router.push("/");
+        }} className="btn-human px-8 py-3 text-sm">
+          Finish & Return Home →
         </button>
       </div>
     </main>

@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${marker.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col">
+    <html lang="en" className={`${inter.variable} ${marker.variable} h-full`} suppressHydrationWarning data-scroll-behavior="smooth">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Providers>
           <Header />
           <div className="pt-20 flex-1 flex flex-col">

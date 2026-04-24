@@ -39,7 +39,11 @@ export default function DispatchPage() {
         const nextState: PipelineState = { ...state, dispatch: response };
         setPipeline(nextState);
         setPlan(response);
-        localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        if (localStorage.getItem("reliefos_pipeline")) {
+          localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        } else {
+          sessionStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to compute dispatch right now.");
       } finally {
@@ -50,7 +54,7 @@ export default function DispatchPage() {
   );
 
   useEffect(() => {
-    const raw = localStorage.getItem("reliefos_pipeline");
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
     if (!raw) {
       router.replace("/upload");
       return;
@@ -78,6 +82,11 @@ export default function DispatchPage() {
 
   const handleConfirm = () => {
     setConfirmed(true);
+    if (pipeline) {
+      const nextState = { ...pipeline, dispatchConfirmed: true };
+      sessionStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+      localStorage.removeItem("reliefos_pipeline");
+    }
   };
 
   if (loading) {

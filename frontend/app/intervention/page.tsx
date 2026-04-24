@@ -38,7 +38,11 @@ export default function InterventionPage() {
         const nextState: PipelineState = { ...state, interventions: recommended };
         setPipeline(nextState);
         setResult(recommended);
-        localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        if (localStorage.getItem("reliefos_pipeline")) {
+          localStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        } else {
+          sessionStorage.setItem("reliefos_pipeline", JSON.stringify(nextState));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to generate interventions.");
       } finally {
@@ -49,7 +53,7 @@ export default function InterventionPage() {
   );
 
   useEffect(() => {
-    const raw = localStorage.getItem("reliefos_pipeline");
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
     if (!raw) {
       router.replace("/upload");
       return;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -53,10 +53,47 @@ export default function UploadPage() {
     error: null,
   });
 
+  useEffect(() => {
+    const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
+    if (raw) {
+      try {
+        const pipeline = JSON.parse(raw);
+        if (pipeline.reportId && pipeline.imageUrl && pipeline.ocrText && pipeline.extracted && pipeline.trust) {
+          setState({
+            stage: "done",
+            imagePreview: pipeline.imageUrl,
+            upload: {
+              report_id: pipeline.reportId,
+              image_url: pipeline.imageUrl,
+              raw_ocr_text: pipeline.ocrText,
+              ocr_confidence: pipeline.ocrConfidence ?? 0.95,
+            },
+            extracted: pipeline.extracted,
+            trust: pipeline.trust,
+            error: null,
+          });
+        }
+      } catch (e) {}
+    }
+  }, []);
+
   const runPipeline = useCallback(async (file: File) => {
     // Show preview immediately
     const preview = URL.createObjectURL(file);
     setState(s => ({ ...s, stage: "uploading", imagePreview: preview, error: null }));
+
+    let base64Image = preview;
+    try {
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
+      reader.readAsDataURL(file);
+      base64Image = await base64Promise;
+    } catch (e) {
+      console.warn("Failed to convert image to base64", e);
+    }
 
     try {
       // Step 1 — OCR
@@ -82,14 +119,16 @@ export default function UploadPage() {
       // Persist to localStorage for downstream pages
       localStorage.setItem("reliefos_pipeline", JSON.stringify({
         reportId:   upload.report_id,
-        imageUrl:   upload.image_url,
+        imageUrl:   base64Image,
         ocrText:    upload.raw_ocr_text,
+        ocrConfidence: upload.ocr_confidence,
         extracted,
         trust,
         risk: null,
         interventions: null,
         dispatch: null,
       }));
+      sessionStorage.removeItem("reliefos_pipeline");
 
     } catch (err) {
       setState(s => ({
@@ -101,6 +140,8 @@ export default function UploadPage() {
   }, []);
 
   const handleReset = () => {
+    localStorage.removeItem("reliefos_pipeline");
+    sessionStorage.removeItem("reliefos_pipeline");
     setState({ stage: "idle", imagePreview: null, upload: null, extracted: null, trust: null, error: null });
   };
 
@@ -183,7 +224,21 @@ export default function UploadPage() {
           <ExtractionReview
             report={extracted}
             onUpdate={(updated) =>
-              setState((s) => ({ ...s, extracted: updated }))
+              setState((s) => {
+                const raw = localStorage.getItem("reliefos_pipeline") || sessionStorage.getItem("reliefos_pipeline");
+                if (raw) {
+                  try {
+                    const pipeline = JSON.parse(raw);
+                    pipeline.extracted = updated;
+                    if (localStorage.getItem("reliefos_pipeline")) {
+                      localStorage.setItem("reliefos_pipeline", JSON.stringify(pipeline));
+                    } else {
+                      sessionStorage.setItem("reliefos_pipeline", JSON.stringify(pipeline));
+                    }
+                  } catch (e) {}
+                }
+                return { ...s, extracted: updated };
+              })
             }
           />
 
