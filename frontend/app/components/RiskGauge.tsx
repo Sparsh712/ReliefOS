@@ -73,7 +73,7 @@ export default function RiskGauge({ score, label }: RiskGaugeProps) {
         </svg>
 
         {/* Score text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center rotate-90">
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={`text-4xl font-bold ${getColor()}`}>
             {Math.round(animatedScore)}
           </span>
