@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import React from "react";
 import { Inter, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/Layout/Header";
