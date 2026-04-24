@@ -56,19 +56,19 @@ export default function InterventionCard({ intervention, kind }: InterventionCar
         {intervention.description}
       </p>
 
-      {/* Details in boxes */}
+      {/* Details — 3 clearly visible boxes */}
       <div className="grid grid-cols-1 gap-3">
-        <div className="bg-[var(--bg-elevated)] border border-[var(--border)] rounded-sm px-4 py-3">
-          <span className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)] block mb-1">Rationale</span>
-          <p className="text-sm text-[var(--text-secondary)] font-medium">{intervention.rationale}</p>
+        <div className="bg-zinc-800/60 dark:bg-zinc-800 border border-zinc-600 rounded-sm px-4 py-3">
+          <span className="text-xs font-black uppercase tracking-widest text-zinc-400 block mb-1">Rationale</span>
+          <p className="text-sm text-zinc-200 font-medium">{intervention.rationale}</p>
         </div>
-        <div className="bg-[var(--bg-elevated)] border border-[var(--border)] rounded-sm px-4 py-3">
-          <span className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)] block mb-1">Minimum Effective Action</span>
-          <p className="text-sm text-[var(--text-secondary)] font-medium">{intervention.minimum_effective}</p>
+        <div className="bg-zinc-800/60 dark:bg-zinc-800 border border-zinc-600 rounded-sm px-4 py-3">
+          <span className="text-xs font-black uppercase tracking-widest text-zinc-400 block mb-1">Minimum Effective Action</span>
+          <p className="text-sm text-zinc-200 font-medium">{intervention.minimum_effective}</p>
         </div>
-        <div className="bg-[var(--bg-elevated)] border border-[var(--border)] rounded-sm px-4 py-3 flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)]">Ranking Score</span>
-          <span className="text-lg font-black text-[var(--text-primary)]">{intervention.ranking_score}</span>
+        <div className="bg-zinc-800/60 dark:bg-zinc-800 border border-zinc-600 rounded-sm px-4 py-3">
+          <span className="text-xs font-black uppercase tracking-widest text-zinc-400 block mb-1">Ranking Score</span>
+          <p className="text-2xl font-black text-white">{intervention.ranking_score}</p>
         </div>
       </div>
 
