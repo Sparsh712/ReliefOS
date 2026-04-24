@@ -97,9 +97,9 @@ export default function InterventionPage() {
       <StepProgress currentStep={5} />
 
       <div>
-        <h1 className="text-2xl font-bold text-relief-100">Intervention Planner</h1>
-        <p className="text-relief-400 text-sm mt-1">
-          Recommended actions are ranked by risk severity, trust confidence, intervention fit, and travel cost.
+        <h1 className="text-3xl font-black tracking-tight">Intervention Planner</h1>
+        <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
+          Recommended actions ranked by risk severity, trust confidence, and travel cost.
         </p>
       </div>
 
@@ -126,16 +126,13 @@ export default function InterventionPage() {
 
       <EvidenceTrail evidence={result.evidence_trail} />
 
-      <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="text-xs text-relief-500">Phase 5 complete: recommendation ranking with explainable evidence trail.</p>
-        <div className="flex items-center gap-2">
-          <button onClick={() => router.push("/dashboard")} className="btn-ghost text-sm">
-            Back to Dashboard
-          </button>
-          <button onClick={() => router.push("/dispatch")} className="btn-primary text-sm">
-            Prepare Dispatch
-          </button>
-        </div>
+      <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
+        <button onClick={() => router.push("/dashboard")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
+          ← Back to Dashboard
+        </button>
+        <button onClick={() => router.push("/dispatch")} className="btn-human px-8 py-3 text-sm">
+          Prepare Dispatch →
+        </button>
       </div>
     </main>
   );

@@ -80,8 +80,8 @@ export default function FeedbackPage() {
       <StepProgress currentStep={7} />
 
       <div>
-        <h1 className="text-2xl font-bold text-relief-100">Feedback Loop</h1>
-        <p className="text-relief-400 text-sm mt-1">
+        <h1 className="text-3xl font-black tracking-tight">Feedback Loop</h1>
+        <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
           Capture outcome data so hotspot risk can be updated based on on-ground resolution.
         </p>
       </div>
@@ -113,10 +113,12 @@ export default function FeedbackPage() {
         </section>
       )}
 
-      <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="text-xs text-relief-500">Phase 7 complete: feedback captured and risk score updated.</p>
-        <button onClick={() => router.push("/dispatch")} className="btn-ghost text-sm">
-          Back to Dispatch
+      <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-end gap-4">
+        <button onClick={() => router.push("/dispatch")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
+          ← Back to Dispatch
+        </button>
+        <button onClick={() => router.push("/upload")} className="btn-human px-8 py-3 text-sm">
+          Start New Report →
         </button>
       </div>
     </main>

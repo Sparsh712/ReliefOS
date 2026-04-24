@@ -177,8 +177,8 @@ export default function DashboardPage() {
       <StepProgress currentStep={4} />
 
       <div>
-        <h1 className="text-2xl font-bold text-relief-100">Hotspot Risk Dashboard</h1>
-        <p className="text-relief-400 text-sm mt-1">
+        <h1 className="text-3xl font-black tracking-tight">Hotspot Risk Dashboard</h1>
+        <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
           Risk scoring blends disease signals, urgency, corroboration, and monsoon intensity.
         </p>
       </div>
@@ -247,16 +247,13 @@ export default function DashboardPage() {
         currentWard={pipeline.extracted?.ward}
       />
 
-      <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="text-xs text-relief-500">Phase 4 complete: risk score, label, escalation clock, and hotspot ranking.</p>
-        <div className="flex items-center gap-2">
-          <button onClick={() => router.push("/upload")} className="btn-ghost text-sm">
-            Analyze Another Report
-          </button>
-          <button onClick={() => router.push("/intervention")} className="btn-primary text-sm">
-            Plan Intervention
-          </button>
-        </div>
+      <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
+        <button onClick={() => router.push("/upload")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
+          ← Analyze Another Report
+        </button>
+        <button onClick={() => router.push("/intervention")} className="btn-human px-8 py-3 text-sm">
+          Plan Intervention →
+        </button>
       </div>
     </main>
   );

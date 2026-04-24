@@ -102,8 +102,8 @@ export default function DispatchPage() {
       <StepProgress currentStep={6} />
 
       <div>
-        <h1 className="text-2xl font-bold text-relief-100">Volunteer Dispatch</h1>
-        <p className="text-relief-400 text-sm mt-1">
+        <h1 className="text-3xl font-black tracking-tight">Volunteer Dispatch</h1>
+        <p className="text-[var(--text-secondary)] text-lg mt-2 font-medium">
           Dispatching the minimum capable team with fastest feasible arrival time.
         </p>
       </div>
@@ -156,20 +156,17 @@ export default function DispatchPage() {
         )}
       </div>
 
-      <div className="pt-2 border-t border-relief-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="text-xs text-relief-500">Phase 6 complete: team matching, ETA, and dispatch confirmation.</p>
-        <div className="flex items-center gap-2">
-          <button onClick={() => router.push("/intervention")} className="btn-ghost text-sm">
-            Back to Intervention
-          </button>
-          <button
-            onClick={() => router.push("/feedback")}
-            className="btn-primary text-sm"
-            disabled={!confirmed}
-          >
-            Submit Feedback
-          </button>
-        </div>
+      <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
+        <button onClick={() => router.push("/intervention")} className="px-6 py-3 text-sm font-black uppercase tracking-widest border-2 border-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-all rounded-sm">
+          ← Back to Intervention
+        </button>
+        <button
+          onClick={() => router.push("/feedback")}
+          className="btn-human px-8 py-3 text-sm"
+          disabled={!confirmed}
+        >
+          Submit Feedback →
+        </button>
       </div>
     </main>
   );
