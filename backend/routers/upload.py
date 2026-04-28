@@ -31,13 +31,16 @@ async def upload_report(file: UploadFile = File(...)) -> UploadResponse:
     from firebase_admin import firestore
     
     if firebase_admin._apps:
-        db = firestore.client()
-        db.collection("reports").document(report_id).set({
-            "report_id": report_id,
-            "raw_ocr_text": ocr_text,
-            "ocr_confidence": confidence,
-            "status": "uploaded",
-        })
+        try:
+            db = firestore.client()
+            db.collection("reports").document(report_id).set({
+                "report_id": report_id,
+                "raw_ocr_text": ocr_text,
+                "ocr_confidence": confidence,
+                "status": "uploaded",
+            })
+        except Exception as e:
+            print(f"Firebase Write Error: {e}")
 
     return UploadResponse(
         report_id=report_id,

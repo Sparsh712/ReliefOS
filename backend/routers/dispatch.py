@@ -69,15 +69,18 @@ def _store_deployment(
     if not firebase_admin._apps:
         return
 
-    db = firestore.client()
-    db.collection("deployments").document(deployment_id).set(
-        {
-            "deployment_id": deployment_id,
-            "report_id": report_id,
-            "target_zone": ward,
-            "assigned_volunteers": team,
-            "intervention_title": intervention_title,
-            "route_eta": eta_minutes,
-            "status": "pending",
-        }
-    )
+    try:
+        db = firestore.client()
+        db.collection("deployments").document(deployment_id).set(
+            {
+                "deployment_id": deployment_id,
+                "report_id": report_id,
+                "target_zone": ward,
+                "assigned_volunteers": team,
+                "intervention_title": intervention_title,
+                "route_eta": eta_minutes,
+                "status": "pending",
+            }
+        )
+    except Exception as e:
+        print(f"Firebase Dispatch Write Error: {e}")
